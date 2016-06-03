@@ -19,11 +19,35 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(ast, ['prop', '?', False])
 
+    def test_property_less_than(self):
+        c = C('i') < 5
+        ast = c.get_ast()
+
+        self.assertEqual(ast, ['i', '<', 5])
+
+    def test_property_less_than_or_equal(self):
+        c = C('i') <= 5
+        ast = c.get_ast()
+
+        self.assertEqual(ast, ['i', '<=', 5])
+
     def test_property_equal(self):
         c = C('foo') == 'bar'
         ast = c.get_ast()
 
         self.assertEqual(ast, ['foo', '==', 'bar'])
+
+    def test_property_greater_than_or_equal(self):
+        c = C('i') >= 5
+        ast = c.get_ast()
+
+        self.assertEqual(ast, ['i', '>=', 5])
+
+    def test_property_greater_than(self):
+        c = C('i') > 5
+        ast = c.get_ast()
+
+        self.assertEqual(ast, ['i', '>', 5])
 
     def test_property_like(self):
         c = C('foo').like(r'bar.*')
@@ -73,6 +97,10 @@ class ComparisonTest(UTCase):
                 ['baz', '?', False]
             ]
         )
+
+    def test_wrong_combination(self):
+        with self.assertRaises(TypeError):
+            C('foo') & 5
 
 
 if __name__ == '__main__':
