@@ -19,7 +19,7 @@ class ComparisonTest(UTCase):
                     'val': 'prop'
                 },
                 {
-                    'name': 'op',
+                    'name': 'cond',
                     'val': '?'
                 },
                 {
@@ -41,7 +41,7 @@ class ComparisonTest(UTCase):
                     'val': 'prop'
                 },
                 {
-                    'name': 'op',
+                    'name': 'cond',
                     'val': '?'
                 },
                 {
@@ -63,7 +63,7 @@ class ComparisonTest(UTCase):
                     'val': 'i'
                 },
                 {
-                    'name': 'op',
+                    'name': 'cond',
                     'val': '<'
                 },
                 {
@@ -85,7 +85,7 @@ class ComparisonTest(UTCase):
                     'val': 'i'
                 },
                 {
-                    'name': 'op',
+                    'name': 'cond',
                     'val': '<='
                 },
                 {
@@ -107,7 +107,7 @@ class ComparisonTest(UTCase):
                     'val': 'foo'
                 },
                 {
-                    'name': 'op',
+                    'name': 'cond',
                     'val': '=='
                 },
                 {
@@ -129,7 +129,7 @@ class ComparisonTest(UTCase):
                     'val': 'i'
                 },
                 {
-                    'name': 'op',
+                    'name': 'cond',
                     'val': '>='
                 },
                 {
@@ -151,7 +151,7 @@ class ComparisonTest(UTCase):
                     'val': 'i'
                 },
                 {
-                    'name': 'op',
+                    'name': 'cond',
                     'val': '>'
                 },
                 {
@@ -173,7 +173,7 @@ class ComparisonTest(UTCase):
                     'val': 'foo'
                 },
                 {
-                    'name': 'op',
+                    'name': 'cond',
                     'val': '~='
                 },
                 {
@@ -196,7 +196,7 @@ class ComparisonTest(UTCase):
                         'val': 'foo'
                     },
                     {
-                        'name': 'op',
+                        'name': 'cond',
                         'val': '=='
                     },
                     {
@@ -214,7 +214,7 @@ class ComparisonTest(UTCase):
                         'val': 'bar'
                     },
                     {
-                        'name': 'op',
+                        'name': 'cond',
                         'val': '>'
                     },
                     {
@@ -238,7 +238,7 @@ class ComparisonTest(UTCase):
                         'val': 'foo'
                     },
                     {
-                        'name': 'op',
+                        'name': 'cond',
                         'val': '=='
                     },
                     {
@@ -256,7 +256,7 @@ class ComparisonTest(UTCase):
                         'val': 'bar'
                     },
                     {
-                        'name': 'op',
+                        'name': 'cond',
                         'val': '>'
                     },
                     {
@@ -281,7 +281,7 @@ class ComparisonTest(UTCase):
                             'val': 'foo'
                         },
                         {
-                            'name': 'op',
+                            'name': 'cond',
                             'val': '=='
                         },
                         {
@@ -299,7 +299,7 @@ class ComparisonTest(UTCase):
                             'val': 'bar'
                         },
                         {
-                            'name': 'op',
+                            'name': 'cond',
                             'val': '>'
                         },
                         {
@@ -318,7 +318,7 @@ class ComparisonTest(UTCase):
                         'val': 'baz'
                     },
                     {
-                        'name': 'op',
+                        'name': 'cond',
                         'val': '?'
                     },
                     {

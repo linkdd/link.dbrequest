@@ -103,6 +103,6 @@ class C(Node, Comparable, CombinableCondition):
     def get_ast(self):
         return [
             AST('prop', self.name),
-            AST('op', self.operator),
+            AST('cond', self.operator),
             AST('val', self.value)
         ]
