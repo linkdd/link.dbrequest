@@ -12,6 +12,7 @@ class Comparable(object):
     NE = '!='
     GTE = '>='
     GT = '>'
+    LIKE = '~='
 
     def __init__(self, *args, **kwargs):
         super(Comparable, self).__init__(*args, **kwargs)
@@ -45,6 +46,9 @@ class Comparable(object):
 
     def __invert__(self):
         return self._compare(self.EXISTS, False)
+
+    def like(self, value):
+        return self._compare(self.LIKE, value)
 
 
 class CombinableCondition(object):

@@ -25,6 +25,12 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(ast, ['foo', '==', 'bar'])
 
+    def test_property_like(self):
+        c = C('foo').like(r'bar.*')
+        ast = c.get_ast()
+
+        self.assertEqual(ast, ['foo', '~=', r'bar.*'])
+
     def test_property_and(self):
         c = (C('foo') == 'bar') & (C('bar') > 5)
         ast = c.get_ast()
