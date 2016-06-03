@@ -50,7 +50,7 @@ class ComparisonTest(UTCase):
         self.assertEqual(ast, ['i', '>', 5])
 
     def test_property_like(self):
-        c = C('foo').like(r'bar.*')
+        c = C('foo') % r'bar.*'
         ast = c.get_ast()
 
         self.assertEqual(ast, ['foo', '~=', r'bar.*'])

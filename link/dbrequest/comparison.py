@@ -47,7 +47,7 @@ class Comparable(object):
     def __invert__(self):
         return self._compare(self.EXISTS, False)
 
-    def like(self, value):
+    def __mod__(self, value):
         return self._compare(self.LIKE, value)
 
 
