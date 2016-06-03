@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from link.dbrequest.ast import AST
+
 
 class Node(object):
     def __init__(self, name, *args, **kwargs):
@@ -8,4 +10,4 @@ class Node(object):
         self.name = name
 
     def get_ast(self):
-        return self.name
+        return AST('node', self.name)

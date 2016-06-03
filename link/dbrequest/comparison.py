@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from link.dbrequest.tree import Node
+from link.dbrequest.ast import AST
 
 
 class Comparable(object):
@@ -93,11 +94,15 @@ class CombinedCondition(Node):
     def get_ast(self):
         return [
             self.left.get_ast(),
-            super(CombinedCondition, self).get_ast(),
+            AST('join', self.name),
             self.right.get_ast()
         ]
 
 
 class C(Node, Comparable, CombinableCondition):
     def get_ast(self):
-        return [self.name, self.operator, self.value]
+        return [
+            AST('prop', self.name),
+            AST('op', self.operator),
+            AST('val', self.value)
+        ]

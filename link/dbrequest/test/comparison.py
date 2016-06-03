@@ -11,49 +11,177 @@ class ComparisonTest(UTCase):
         c = C('prop')
         ast = c.get_ast()
 
-        self.assertEqual(ast, ['prop', '?', True])
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'prop',
+                    'val': 'prop'
+                },
+                {
+                    'name': 'op',
+                    'val': '?'
+                },
+                {
+                    'name': 'val',
+                    'val': True
+                }
+            ]
+        )
 
     def test_property_doesnt_exists(self):
         c = ~C('prop')
         ast = c.get_ast()
 
-        self.assertEqual(ast, ['prop', '?', False])
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'prop',
+                    'val': 'prop'
+                },
+                {
+                    'name': 'op',
+                    'val': '?'
+                },
+                {
+                    'name': 'val',
+                    'val': False
+                }
+            ]
+        )
 
     def test_property_less_than(self):
         c = C('i') < 5
         ast = c.get_ast()
 
-        self.assertEqual(ast, ['i', '<', 5])
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'prop',
+                    'val': 'i'
+                },
+                {
+                    'name': 'op',
+                    'val': '<'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
 
     def test_property_less_than_or_equal(self):
         c = C('i') <= 5
         ast = c.get_ast()
 
-        self.assertEqual(ast, ['i', '<=', 5])
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'prop',
+                    'val': 'i'
+                },
+                {
+                    'name': 'op',
+                    'val': '<='
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
 
     def test_property_equal(self):
         c = C('foo') == 'bar'
         ast = c.get_ast()
 
-        self.assertEqual(ast, ['foo', '==', 'bar'])
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'prop',
+                    'val': 'foo'
+                },
+                {
+                    'name': 'op',
+                    'val': '=='
+                },
+                {
+                    'name': 'val',
+                    'val': 'bar'
+                }
+            ]
+        )
 
     def test_property_greater_than_or_equal(self):
         c = C('i') >= 5
         ast = c.get_ast()
 
-        self.assertEqual(ast, ['i', '>=', 5])
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'prop',
+                    'val': 'i'
+                },
+                {
+                    'name': 'op',
+                    'val': '>='
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
 
     def test_property_greater_than(self):
         c = C('i') > 5
         ast = c.get_ast()
 
-        self.assertEqual(ast, ['i', '>', 5])
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'prop',
+                    'val': 'i'
+                },
+                {
+                    'name': 'op',
+                    'val': '>'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
 
     def test_property_like(self):
         c = C('foo') % r'bar.*'
         ast = c.get_ast()
 
-        self.assertEqual(ast, ['foo', '~=', r'bar.*'])
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'prop',
+                    'val': 'foo'
+                },
+                {
+                    'name': 'op',
+                    'val': '~='
+                },
+                {
+                    'name': 'val',
+                    'val': r'bar.*'
+                }
+            ]
+        )
 
     def test_property_and(self):
         c = (C('foo') == 'bar') & (C('bar') > 5)
@@ -62,9 +190,38 @@ class ComparisonTest(UTCase):
         self.assertEqual(
             ast,
             [
-                ['foo', '==', 'bar'],
-                '&',
-                ['bar', '>', 5]
+                [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'op',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ],
+                {
+                    'name': 'join',
+                    'val': '&'
+                },
+                [
+                    {
+                        'name': 'prop',
+                        'val': 'bar'
+                    },
+                    {
+                        'name': 'op',
+                        'val': '>'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
             ]
         )
 
@@ -75,9 +232,38 @@ class ComparisonTest(UTCase):
         self.assertEqual(
             ast,
             [
-                ['foo', '==', 'bar'],
-                '|',
-                ['bar', '>', 5]
+                [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'op',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ],
+                {
+                    'name': 'join',
+                    'val': '|'
+                },
+                [
+                    {
+                        'name': 'prop',
+                        'val': 'bar'
+                    },
+                    {
+                        'name': 'op',
+                        'val': '>'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
             ]
         )
 
@@ -89,12 +275,57 @@ class ComparisonTest(UTCase):
             ast,
             [
                 [
-                    ['foo', '==', 'bar'],
-                    '&',
-                    ['bar', '>', 5]
+                    [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'op',
+                            'val': '=='
+                        },
+                        {
+                            'name': 'val',
+                            'val': 'bar'
+                        }
+                    ],
+                    {
+                        'name': 'join',
+                        'val': '&'
+                    },
+                    [
+                        {
+                            'name': 'prop',
+                            'val': 'bar'
+                        },
+                        {
+                            'name': 'op',
+                            'val': '>'
+                        },
+                        {
+                            'name': 'val',
+                            'val': 5
+                        }
+                    ]
                 ],
-                '|',
-                ['baz', '?', False]
+                {
+                    'name': 'join',
+                    'val': '|'
+                },
+                [
+                    {
+                        'name': 'prop',
+                        'val': 'baz'
+                    },
+                    {
+                        'name': 'op',
+                        'val': '?'
+                    },
+                    {
+                        'name': 'val',
+                        'val': False
+                    }
+                ]
             ]
         )
 
