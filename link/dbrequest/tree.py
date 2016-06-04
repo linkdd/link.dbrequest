@@ -11,3 +11,8 @@ class Node(object):
 
     def get_ast(self):
         return AST('node', self.name)
+
+
+class Value(Node):
+    def get_ast(self):
+        return AST('val', self.name)

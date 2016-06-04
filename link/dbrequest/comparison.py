@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from link.dbrequest.tree import Node
+from link.dbrequest.tree import Node, Value
 from link.dbrequest.ast import AST
 
 
@@ -19,9 +19,12 @@ class Comparable(object):
         super(Comparable, self).__init__(*args, **kwargs)
 
         self.operator = self.EXISTS
-        self.value = True
+        self.value = Value(True)
 
     def _compare(self, operator, value):
+        if not isinstance(value, Node):
+            value = Value(value)
+
         self.operator = operator
         self.value = value
 
@@ -104,5 +107,5 @@ class C(Node, Comparable, CombinableCondition):
         return [
             AST('prop', self.name),
             AST('cond', self.operator),
-            AST('val', self.value)
+            self.value.get_ast()
         ]
