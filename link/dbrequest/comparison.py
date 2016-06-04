@@ -3,6 +3,8 @@
 from link.dbrequest.tree import Node, Value
 from link.dbrequest.ast import AST
 
+from copy import deepcopy
+
 
 class Comparable(object):
 
@@ -88,18 +90,30 @@ class CombinableCondition(object):
 
 
 class CombinedCondition(Node):
-    def __init__(self, left, operator, right, *args, **kwargs):
+    def __init__(self, left, operator, right, inverted=False, *args, **kwargs):
         super(CombinedCondition, self).__init__(operator, *args, **kwargs)
 
         self.left = left
         self.right = right
+        self.inverted = inverted
 
     def get_ast(self):
-        return [
+        ast = [
             self.left.get_ast(),
             AST('join', self.name),
             self.right.get_ast()
         ]
+
+        if self.inverted:
+            return AST('not', ast)
+
+        else:
+            return ast
+
+    def __invert__(self):
+        c = deepcopy(self)
+        c.inverted = True
+        return c
 
 
 class C(Node, Comparable, CombinableCondition):

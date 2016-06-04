@@ -333,6 +333,53 @@ class ComparisonTest(UTCase):
         with self.assertRaises(TypeError):
             C('foo') & 5
 
+    def test_combination_inverted(self):
+        c = ~((C('foo') == 'bar') & (C('bar') > 5))
+        ast = c.get_ast()
+
+        self.assertEqual(
+            ast,
+            {
+                'name': 'not',
+                'val': [
+                    [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'cond',
+                            'val': '=='
+                        },
+                        {
+                            'name': 'val',
+                            'val': 'bar'
+                        }
+                    ],
+                    {
+                        'name': 'join',
+                        'val': '&'
+                    },
+                    [
+                        {
+                            'name': 'prop',
+                            'val': 'bar'
+                        },
+                        {
+                            'name': 'cond',
+                            'val': '>'
+                        },
+                        {
+                            'name': 'val',
+                            'val': 5
+                        }
+                    ]
+                ]
+            }
+        )
+
+
+
 
 if __name__ == '__main__':
     main()
