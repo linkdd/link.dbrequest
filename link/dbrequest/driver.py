@@ -17,6 +17,7 @@ class Driver(Middleware):
 
     __protocols__ = ['storage']
 
+    QUERY_COUNT = 'count'
     QUERY_CREATE = 'save'
     QUERY_READ = 'find'
     QUERY_UPDATE = 'update'
@@ -24,6 +25,12 @@ class Driver(Middleware):
 
     def _process_query(self, conn, query):
         raise NotImplementedError()
+
+    def count_elements(self, ast):
+        return self._process_query(self.conn, {
+            'type': Driver.QUERY_COUNT,
+            'filter': ast
+        })
 
     def put_element(self, ast):
         result = self._process_query(self.conn, {

@@ -64,8 +64,15 @@ class QueryManager(Middleware):
                 raise ASTSingleStatementError(ast['name'])
 
         elif isinstance(ast, list):
-            statements = ['get', 'filter', 'exclude', 'update', 'delete']
-            last_statements = ['update', 'delete', 'get']
+            statements = [
+                'get',
+                'filter',
+                'exclude',
+                'update',
+                'delete',
+                'count'
+            ]
+            last_statements = ['update', 'delete', 'get', 'count']
             l = len(ast)
 
             for i in range(l):
@@ -105,6 +112,9 @@ class QueryManager(Middleware):
         elif ast[-1]['name'] == 'delete':
             return self.backend.remove_elements(ast[:-1])
 
+        elif ast[-1]['name'] == 'count':
+            return self.backend.count_elements(ast[:-1])
+
         else:
             return self.backend.find_elements(ast)
 
@@ -116,6 +126,12 @@ class Query(object):
         self.manager = manager
         self.ast = []
         self.result = None
+
+    def count(self):
+        c = deepcopy(self)
+        c.ast.append(AST('count', None))
+
+        return self.manager.execute(c.ast)
 
     def get(self, condition):
         c = deepcopy(self)
