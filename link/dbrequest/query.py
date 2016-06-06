@@ -65,12 +65,13 @@ class QueryManager(Middleware):
 
         elif isinstance(ast, list):
             statements = ['get', 'filter', 'exclude', 'update', 'delete']
+            last_statements = ['update', 'delete', 'get']
             l = len(ast)
 
             for i in range(l):
                 node = ast[i]
 
-                if node['name'] in ['update', 'delete'] and (i + 1) == l:
+                if node['name'] in last_statements and (i + 1) != l:
                     raise ASTLastStatementError(node['name'], i)
 
                 elif node['name'] not in statements:
