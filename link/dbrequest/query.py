@@ -4,9 +4,15 @@ from b3j0f.conf import Configurable, category
 
 from link.middleware.core import Middleware
 from link.dbrequest import CONF_BASE_PATH
-from link.dbrequest.tree import Node, Value
-from link.dbrequest.comparison import C
+
 from link.dbrequest.ast import AST
+from link.dbrequest.ast import ASTSingleStatementError
+from link.dbrequest.ast import ASTLastStatementError
+from link.dbrequest.ast import ASTInvalidStatementError
+from link.dbrequest.ast import ASTInvalidFormatError
+
+from link.dbrequest.comparison import C
+from link.dbrequest.assignment import A
 
 from copy import deepcopy
 
@@ -28,52 +34,107 @@ class QueryManager(Middleware):
         self.backend = backend
 
     def all(self):
-        return _Query(self)
+        return Query(self)
 
     def get(self, condition):
         if not isinstance(condition, C):
-            raise TypeError(
-                'Supplied condition is not supported: {0}'.format(
-                    type(condition)
-                )
+            raise TypeError('Supplied condition is not supported: {0}'.format(
+                type(condition)
+            ))
+
+        return self.execute(AST('get', condition.get_ast()))
+
+    def create(self, *fields):
+        fields_ast = []
+
+        for field in fields:
+            if not isinstance(field, A):
+                raise TypeError('Supplied field is not supported: {0}'.format(
+                    type(field)
+                ))
+
+            fields_ast.append(field.get_ast())
+
+        return self.execute(AST('create', fields_ast))
+
+    @staticmethod
+    def validate_ast(ast):
+        if isinstance(ast, dict):
+            if ast['name'] not in ['get', 'create']:
+                raise ASTSingleStatementError(ast['name'])
+
+        elif isinstance(ast, list):
+            statements = ['get', 'filter', 'exclude', 'update', 'delete']
+            l = len(ast)
+
+            for i in range(l):
+                node = ast[i]
+
+                if node['name'] in ['update', 'delete'] and (i + 1) == l:
+                    raise ASTLastStatementError(node['name'], i)
+
+                elif node['name'] not in statements:
+                    raise ASTInvalidStatementError(node['name'])
+
+        else:
+            raise ASTInvalidFormatError()
+
+    def execute(self, ast):
+        self.validate_ast(ast)
+
+        if isinstance(ast, dict):
+            if ast['name'] == 'get':
+                elements = self.backend.find_elements(ast['val'])
+
+                if len(elements) == 0:
+                    return None
+
+                else:
+                    return elements[0]
+
+            elif ast['name'] == 'create':
+                return self.backend.put_element(ast['val'])
+
+        elif ast[-1]['name'] == 'update':
+            return self.backend.update_elements(
+                ast[:-1],
+                ast[-1]['val']
             )
 
-        return self._execute(AST('get', condition.get_ast()))
+        elif ast[-1]['name'] == 'delete':
+            return self.backend.remove_elements(ast[:-1])
 
-    def _execute(self, ast):
-        raise NotImplementedError('TODO')
+        else:
+            return self.backend.find_elements(ast)
 
 
-class _Query(object):
+class Query(object):
     def __init__(self, manager, *args, **kwargs):
-        super(_Query, self).__init__(*args, **kwargs)
+        super(Query, self).__init__(*args, **kwargs)
 
         self.manager = manager
         self.ast = []
+        self.result = None
 
     def get(self, condition):
         c = deepcopy(self)
 
         if not isinstance(condition, C):
-            raise TypeError(
-                'Supplied condition is not supported: {0}'.format(
-                    type(condition)
-                )
-            )
+            raise TypeError('Supplied condition is not supported: {0}'.format(
+                type(condition)
+            ))
 
         c.ast.append(AST('get', condition.get_ast()))
 
-        return self.manager._execute(c.ast)
+        return self.manager.execute(c.ast)
 
     def filter(self, condition):
         c = deepcopy(self)
 
         if not isinstance(condition, C):
-            raise TypeError(
-                'Supplied condition is not supported: {0}'.format(
-                    type(condition)
-                )
-            )
+            raise TypeError('Supplied condition is not supported: {0}'.format(
+                type(condition)
+            ))
 
         c.ast.append(AST('filter', condition.get_ast()))
 
@@ -83,11 +144,9 @@ class _Query(object):
         c = deepcopy(self)
 
         if not isinstance(condition, C):
-            raise TypeError(
-                'Supplied condition is not supported: {0}'.format(
-                    type(condition)
-                )
-            )
+            raise TypeError('Supplied condition is not supported: {0}'.format(
+                type(condition)
+            ))
 
         c.ast.append(AST('exclude', condition.get_ast()))
 
@@ -104,23 +163,30 @@ class _Query(object):
         return c
 
     def __iter__(self):
-        result = self.manager._execute(self.ast)
+        if self.result is None:
+            self.result = self.manager.execute(self.ast)
 
-        return iter(result)
+        return iter(self.result)
 
-    def update(self, **fields):
+    def update(self, *fields):
         c = deepcopy(self)
 
-        update_fields = {}
+        fields_ast = []
 
-        for propname, field in fields.items():
-            propname = propname.replace('__', '.')
+        for field in fields:
+            if not isinstance(field, A):
+                raise TypeError('Supplied field is not supported: {0}'.format(
+                    type(field)
+                ))
 
-            if not isinstance(field, Node):
-                field = Value(field)
+            fields_ast.append(field.get_ast())
 
-            update_fields[propname] = field.get_ast()
+        c.ast.append(AST('update', fields_ast))
 
-        c.ast.append(AST('update', update_fields))
+        return self.manager.execute(c.ast)
 
-        return self.manager._execute(c.ast)
+    def delete(self):
+        c = deepcopy(self)
+        c.ast.append(AST('delete', None))
+
+        return self.manager.execute(c.ast)
