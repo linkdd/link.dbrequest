@@ -11,7 +11,7 @@ from link.dbrequest.ast import ASTLastStatementError
 from link.dbrequest.ast import ASTInvalidStatementError
 from link.dbrequest.ast import ASTInvalidFormatError
 
-from link.dbrequest.comparison import C
+from link.dbrequest.comparison import C, CombinedCondition
 from link.dbrequest.assignment import A
 
 from copy import deepcopy
@@ -37,7 +37,7 @@ class QueryManager(Middleware):
         return Query(self)
 
     def get(self, condition):
-        if not isinstance(condition, C):
+        if not isinstance(condition, (C, CombinedCondition)):
             raise TypeError('Supplied condition is not supported: {0}'.format(
                 type(condition)
             ))
@@ -136,7 +136,7 @@ class Query(object):
     def get(self, condition):
         c = deepcopy(self)
 
-        if not isinstance(condition, C):
+        if not isinstance(condition, (C, CombinedCondition)):
             raise TypeError('Supplied condition is not supported: {0}'.format(
                 type(condition)
             ))
@@ -148,7 +148,7 @@ class Query(object):
     def filter(self, condition):
         c = deepcopy(self)
 
-        if not isinstance(condition, C):
+        if not isinstance(condition, (C, CombinedCondition)):
             raise TypeError('Supplied condition is not supported: {0}'.format(
                 type(condition)
             ))
@@ -160,7 +160,7 @@ class Query(object):
     def exclude(self, condition):
         c = deepcopy(self)
 
-        if not isinstance(condition, C):
+        if not isinstance(condition, (C, CombinedCondition)):
             raise TypeError('Supplied condition is not supported: {0}'.format(
                 type(condition)
             ))
