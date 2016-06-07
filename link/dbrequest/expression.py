@@ -7,7 +7,7 @@ from link.dbrequest.ast import AST
 class CombinableExpression(object):
 
     ADD = '+'
-    SUB = '*'
+    SUB = '-'
     MUL = '*'
     DIV = '/'
     MOD = '%'

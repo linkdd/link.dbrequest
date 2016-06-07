@@ -19,5 +19,8 @@ class A(Node):
     def get_ast(self):
         return [
             AST('prop', self.name),
-            AST('assign', self.val)
+            AST(
+                'assign',
+                self.value.get_ast() if self.value is not None else self.value
+            )
         ]
