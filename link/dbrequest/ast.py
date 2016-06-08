@@ -37,4 +37,6 @@ class ASTInvalidStatementError(ASTError):
 
 class ASTInvalidFormatError(ASTError):
     def __init__(self):
-        super(ASTInvalidFormatError, self).__init__('AST must be a list or a dict')
+        super(ASTInvalidFormatError, self).__init__(
+            'AST must be a list or a dict'
+        )

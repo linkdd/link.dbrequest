@@ -14,8 +14,6 @@ from link.dbrequest.ast import ASTInvalidFormatError
 from link.dbrequest.comparison import C, CombinedCondition
 from link.dbrequest.assignment import A
 
-from copy import deepcopy
-
 
 @Configurable(
     paths='{0}/manager.conf'.format(CONF_BASE_PATH),
@@ -127,14 +125,19 @@ class Query(object):
         self.ast = []
         self.result = None
 
+    def _copy(self):
+        c = Query(self.manager)
+        c.ast = self.ast
+        return c
+
     def count(self):
-        c = deepcopy(self)
+        c = self._copy()
         c.ast.append(AST('count', None))
 
         return self.manager.execute(c.ast)
 
     def get(self, condition):
-        c = deepcopy(self)
+        c = self._copy()
 
         if not isinstance(condition, (C, CombinedCondition)):
             raise TypeError('Supplied condition is not supported: {0}'.format(
@@ -146,7 +149,7 @@ class Query(object):
         return self.manager.execute(c.ast)
 
     def filter(self, condition):
-        c = deepcopy(self)
+        c = self._copy()
 
         if not isinstance(condition, (C, CombinedCondition)):
             raise TypeError('Supplied condition is not supported: {0}'.format(
@@ -158,7 +161,7 @@ class Query(object):
         return c
 
     def exclude(self, condition):
-        c = deepcopy(self)
+        c = self._copy()
 
         if not isinstance(condition, (C, CombinedCondition)):
             raise TypeError('Supplied condition is not supported: {0}'.format(
@@ -170,7 +173,7 @@ class Query(object):
         return c
 
     def __getitem__(self, s):
-        c = deepcopy(self)
+        c = self._copy()
 
         if not isinstance(s, slice):
             s = slice(s)
@@ -186,7 +189,7 @@ class Query(object):
         return iter(self.result)
 
     def update(self, *fields):
-        c = deepcopy(self)
+        c = self._copy()
 
         fields_ast = []
 
@@ -203,7 +206,7 @@ class Query(object):
         return self.manager.execute(c.ast)
 
     def delete(self):
-        c = deepcopy(self)
+        c = self._copy()
         c.ast.append(AST('delete', None))
 
         return self.manager.execute(c.ast)
