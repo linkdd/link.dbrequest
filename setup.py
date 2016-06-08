@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-import sys
 import os
+import re
 
 
 NAME = 'link.dbrequest'
@@ -14,7 +14,7 @@ AUTHOR_EMAIL = 'david.jose.delassus@gmail.com'
 LICENSE = 'MIT'
 REQUIREMENTS = [
     'b3j0f.conf>=0.3.18',
-    'link.middleware>=0.5',
+    'link.middleware>=0.7',
     'six>=1.10.0'
 ]
 
@@ -39,10 +39,21 @@ def get_cwd():
 
 
 def get_version(default='0.1'):
-    sys.path.insert(0, get_cwd())
-    from link import dbrequest as mod
+    _name = NAME.replace('.', os.sep)
+    path = os.path.join(get_cwd(), _name, '__init__.py')
 
-    return getattr(mod, '__version__', default)
+    with open(path) as f:
+        stream = f.read()
+        regex = re.compile(r'.*__version__ = \'(.*?)\'', re.S)
+        version = regex.match(stream)
+
+        if version is None:
+            version = default
+
+        else:
+            version = version.group(1)
+
+    return version
 
 
 def get_long_description():
