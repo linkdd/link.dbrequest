@@ -1,50 +1,50 @@
-link.dbrequests
-===============
+link.dbrequest
+==============
 
-**link.dbrequests** is a database agnostic query system.
+**link.dbrequest** is a database agnostic query system.
 
 See documentation_ for more informations.
 
 .. _documentation: https://linkdbrequest.readthedocs.io
 
-.. image:: https://img.shields.io/pypi/l/link.dbrequests.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/link.dbrequests/
+.. image:: https://img.shields.io/pypi/l/link.dbrequest.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/link.dbrequest/
    :alt: License
 
-.. image:: https://img.shields.io/pypi/status/link.dbrequests.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/link.dbrequests/
+.. image:: https://img.shields.io/pypi/status/link.dbrequest.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/link.dbrequest/
    :alt: Development Status
 
-.. image:: https://img.shields.io/pypi/v/link.dbrequests.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/link.dbrequests/
+.. image:: https://img.shields.io/pypi/v/link.dbrequest.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/link.dbrequest/
    :alt: Latest release
 
-.. image:: https://img.shields.io/pypi/pyversions/link.dbrequests.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/link.dbrequests/
+.. image:: https://img.shields.io/pypi/pyversions/link.dbrequest.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/link.dbrequest/
    :alt: Supported Python versions
 
-.. image:: https://img.shields.io/pypi/implementation/link.dbrequests.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/link.dbrequests/
+.. image:: https://img.shields.io/pypi/implementation/link.dbrequest.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/link.dbrequest/
    :alt: Supported Python implementations
 
-.. image:: https://img.shields.io/pypi/wheel/link.dbrequests.svg?style=flat-square
-   :target: https://travis-ci.org/linkdd/link.dbrequests
+.. image:: https://img.shields.io/pypi/wheel/link.dbrequest.svg?style=flat-square
+   :target: https://travis-ci.org/linkdd/link.dbrequest
    :alt: Download format
 
-.. image:: https://travis-ci.org/linkdd/link.dbrequests.svg?branch=master&style=flat-square
-   :target: https://travis-ci.org/linkdd/link.dbrequests
+.. image:: https://travis-ci.org/linkdd/link.dbrequest.svg?branch=master&style=flat-square
+   :target: https://travis-ci.org/linkdd/link.dbrequest
    :alt: Build status
 
-.. image:: https://coveralls.io/repos/github/linkdd/link.dbrequests/badge.png?style=flat-square
-   :target: https://coveralls.io/r/linkdd/link.dbrequests
+.. image:: https://coveralls.io/repos/github/linkdd/link.dbrequest/badge.png?style=flat-square
+   :target: https://coveralls.io/r/linkdd/link.dbrequest
    :alt: Code test coverage
 
-.. image:: https://img.shields.io/pypi/dm/link.dbrequests.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/link.dbrequests/
+.. image:: https://img.shields.io/pypi/dm/link.dbrequest.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/link.dbrequest/
    :alt: Downloads
 
-.. image:: https://landscape.io/github/linkdd/link.dbrequests/master/landscape.svg?style=flat-square
-   :target: https://landscape.io/github/linkdd/link.dbrequests/master
+.. image:: https://landscape.io/github/linkdd/link.dbrequest/master/landscape.svg?style=flat-square
+   :target: https://landscape.io/github/linkdd/link.dbrequest/master
    :alt: Code Health
 
 .. image:: https://www.quantifiedcode.com/api/v1/project/d2ac1cf45f6f4cdeb938f34fcb2f2214/badge.svg
@@ -56,7 +56,7 @@ Installation
 
 .. code-block:: text
 
-   pip install link.dbrequests
+   pip install link.dbrequest
 
 Features
 --------
