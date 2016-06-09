@@ -4,7 +4,7 @@ from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
 from link.dbrequest.ast import AST
 
-from collections import Iterable
+from collections import Iterator
 import json
 
 
@@ -87,7 +87,7 @@ class Model(object):
             del self.data[prop]
 
 
-class Cursor(Iterable):
+class Cursor(Iterator):
     __slots__ = ('_cursor', 'driver')
 
     def __init__(self, driver, cursor, *args, **kwargs):
@@ -104,10 +104,7 @@ class Cursor(Iterable):
         return Model(self.driver, doc)
 
     def __len__(self):
-        return self.cursor.count(True)
-
-    def __iter__(self):
-        return self
+        return len(self.cursor)
 
     def next(self):
         return self.to_model(self.cursor.next())
