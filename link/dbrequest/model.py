@@ -4,6 +4,7 @@ from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
 from link.dbrequest.ast import AST
 
+from collections import Iterable
 import json
 
 
@@ -86,7 +87,7 @@ class Model(object):
             del self.data[prop]
 
 
-class Cursor(object):
+class Cursor(Iterable):
     __slots__ = ('_cursor', 'driver')
 
     def __init__(self, driver, cursor, *args, **kwargs):
