@@ -42,7 +42,7 @@ class Model(object):
 
     def save(self):
         assignments = self._get_update()
-        self.result = self.driver.put_element(assignments)
+        return self.driver.put_element(assignments)
 
     def delete(self):
         condition = self._get_filter()

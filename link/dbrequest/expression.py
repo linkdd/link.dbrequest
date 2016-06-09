@@ -19,11 +19,11 @@ class CombinableExpression(object):
     BITOR = '|'
     BITXOR = '^'
 
-    def _combine(self, operator, value, reversed):
+    def _combine(self, operator, value, _reversed):
         if not isinstance(value, Node):
             value = Value(value)
 
-        if reversed:
+        if _reversed:
             result = CombinedExpression(value, operator, self)
 
         else:

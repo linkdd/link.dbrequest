@@ -62,13 +62,13 @@ class CombinableCondition(object):
     AND = '&'
     OR = '|'
 
-    def _combine(self, operator, value, reversed):
+    def _combine(self, operator, value, _reversed):
         if not isinstance(value, Node):
             raise TypeError(
                 'Expected Node value, got {0}'.format(value.__class__.__name__)
             )
 
-        if reversed:
+        if _reversed:
             result = CombinedCondition(value, operator, self)
 
         else:
