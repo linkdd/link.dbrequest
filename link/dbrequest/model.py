@@ -4,7 +4,7 @@ from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
 from link.dbrequest.ast import AST
 
-from collections import Iterator
+from six import Iterator
 import json
 
 
@@ -106,8 +106,8 @@ class Cursor(Iterator):
     def __len__(self):
         return len(self.cursor)
 
-    def next(self):
-        return self.to_model(self.cursor.next())
+    def __next__(self):
+        return self.to_model(next(self.cursor))
 
     def __getitem__(self, index):
         return self.to_model(self.cursor[index])
