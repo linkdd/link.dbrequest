@@ -5,6 +5,19 @@ from link.dbrequest.ast import AST
 
 
 class A(Node):
+    """
+    Node representing an assignment.
+
+    :param propname: Name of assigned property
+    :type propname: str
+
+    :param val: Value to assign to property (ignored if unset is True)
+    :type val: Node, or Python type
+
+    :param unset: Unset the property (default: False)
+    :type unset: bool
+    """
+
     def __init__(self, propname, val=None, unset=False, *args, **kwargs):
         super(A, self).__init__(propname, *args, **kwargs)
 
