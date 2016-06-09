@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from b3j0f.conf import Configurable, category
-from link.middleware.core import Middleware
+from link.middleware.connectable import ConnectableMiddleware
 from link.dbrequest import CONF_BASE_PATH
 
 from link.dbrequest.comparison import C
@@ -13,7 +13,7 @@ from link.dbrequest.ast import AST
     paths='{0}/driver.conf'.format(CONF_BASE_PATH),
     conf=category('DRIVER')
 )
-class Driver(Middleware):
+class Driver(ConnectableMiddleware):
 
     __protocols__ = ['storage']
 
@@ -115,11 +115,27 @@ class Model(object):
     def __delitem__(self, prop):
         del self.data[prop]
 
-    def __getattr__(self, prop):
+    def __getattribute__(self, prop):
+        if prop in ['data', 'driver', '__dict__']:
+            return super(Model, self).__getattribute__(prop)
+
+        if prop not in self.data:
+            raise AttributeError(
+                'No attribute "{0}" found in data'.format(prop)
+            )
+
         return self.data[prop]
 
     def __setattr__(self, prop, val):
-        self.data[prop] = val
+        if prop in ['data', 'driver', '__dict__']:
+            super(Model, self).__setattr__(prop, val)
+
+        else:
+            self.data[prop] = val
 
     def __delattr__(self, prop):
-        del self.data[prop]
+        if prop in ['data', 'driver', '__dict__']:
+            super(Model, self).__delattr__(prop)
+
+        else:
+            del self.data[prop]
