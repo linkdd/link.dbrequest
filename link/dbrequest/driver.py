@@ -8,6 +8,8 @@ from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
 from link.dbrequest.ast import AST
 
+import json
+
 
 @Configurable(
     paths='{0}/driver.conf'.format(CONF_BASE_PATH),
@@ -52,16 +54,11 @@ class Driver(ConnectableMiddleware):
         ]
 
     def update_elements(self, filter_ast, update_ast):
-        result = self._process_query(self.conn, {
+        return self._process_query(self.conn, {
             'type': Driver.QUERY_UPDATE,
             'filter': filter_ast,
             'update': update_ast
         })
-
-        return [
-            Model(self, item)
-            for item in result
-        ]
 
     def remove_elements(self, ast):
         return self._process_query(self.conn, {
@@ -76,6 +73,12 @@ class Model(object):
 
         self.driver = driver
         self.data = data
+
+    def __str__(self):
+        return json.dumps(self.data)
+
+    def __repr__(self):
+        return 'Model({0})'.format(json.dumps(self.data))
 
     def _get_filter(self):
         condition = None

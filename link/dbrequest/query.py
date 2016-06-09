@@ -14,6 +14,8 @@ from link.dbrequest.ast import ASTInvalidFormatError
 from link.dbrequest.comparison import C, CombinedCondition
 from link.dbrequest.assignment import A
 
+from copy import deepcopy
+
 
 @Configurable(
     paths='{0}/manager.conf'.format(CONF_BASE_PATH),
@@ -127,7 +129,7 @@ class Query(object):
 
     def _copy(self):
         c = Query(self.manager)
-        c.ast = self.ast
+        c.ast = deepcopy(self.ast)
         return c
 
     def count(self):
