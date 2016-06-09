@@ -22,6 +22,12 @@ from copy import deepcopy
     conf=category('QUERY')
 )
 class QueryManager(Middleware):
+    """
+    Manage storage backend and provide query system for it.
+
+    :param backend: Storage backend
+    :type backend: Driver
+    """
 
     __protocols__ = ['query']
 
@@ -34,9 +40,25 @@ class QueryManager(Middleware):
         self.backend = backend
 
     def all(self):
+        """
+        Get a query selecting all elements in store.
+
+        :rtype: Query
+        """
+
         return Query(self)
 
     def get(self, condition):
+        """
+        Get a single element matching the filter.
+
+        :param condition: Filter
+        :type condition: C or CombinedCondition
+
+        :returns: Matching element or None
+        :rtype: Model or None
+        """
+
         if not isinstance(condition, (C, CombinedCondition)):
             raise TypeError('Supplied condition is not supported: {0}'.format(
                 type(condition)
@@ -45,6 +67,16 @@ class QueryManager(Middleware):
         return self.execute(AST('get', condition.get_ast()))
 
     def create(self, *fields):
+        """
+        Put a new element into the store.
+
+        :param fields: List of assignments
+        :type fields: list of A
+
+        :returns: Created element
+        :rtype: Model
+        """
+
         fields_ast = []
 
         for field in fields:
@@ -59,6 +91,12 @@ class QueryManager(Middleware):
 
     @staticmethod
     def validate_ast(ast):
+        """
+        Validate AST semantics.
+
+        :raises ASTError: if the AST semantics are not valid
+        """
+
         if isinstance(ast, dict):
             if ast['name'] not in ['get', 'create']:
                 raise ASTSingleStatementError(ast['name'])
@@ -88,6 +126,15 @@ class QueryManager(Middleware):
             raise ASTInvalidFormatError()
 
     def execute(self, ast):
+        """
+        Send query to the storage driver.
+
+        :param ast: AST describing the query
+        :type ast: dict or list
+
+        :returns: storage driver's response
+        """
+
         self.validate_ast(ast)
 
         if isinstance(ast, dict):
@@ -102,6 +149,9 @@ class QueryManager(Middleware):
 
             elif ast['name'] == 'create':
                 return self.backend.put_element(ast['val'])
+
+        elif len(ast) == 0:
+            return self.backend.find_elements(ast)
 
         elif ast[-1]['name'] == 'update':
             return self.backend.update_elements(
@@ -120,6 +170,13 @@ class QueryManager(Middleware):
 
 
 class Query(object):
+    """
+    Database agnostic query.
+
+    :param manager: Manager that will execute this query
+    :type manager: QueryManager
+    """
+
     def __init__(self, manager, *args, **kwargs):
         super(Query, self).__init__(*args, **kwargs)
 
@@ -128,17 +185,41 @@ class Query(object):
         self.result = None
 
     def _copy(self):
+        """
+        Create a copy of this query.
+
+        :returns: Copy
+        :rtype: Query
+        """
+
         c = Query(self.manager)
         c.ast = deepcopy(self.ast)
         return c
 
     def count(self):
+        """
+        Count elements matched by this query.
+
+        :returns: Number of matching elements
+        :rtype: int
+        """
+
         c = self._copy()
         c.ast.append(AST('count', None))
 
         return self.manager.execute(c.ast)
 
     def get(self, condition):
+        """
+        Add filter to the query, and get a single element matching the query.
+
+        :param condition: Filter
+        :type condition: C or CombinedCondition
+
+        :returns: Matching element or None
+        :rtype: Model or None
+        """
+
         c = self._copy()
 
         if not isinstance(condition, (C, CombinedCondition)):
@@ -151,6 +232,16 @@ class Query(object):
         return self.manager.execute(c.ast)
 
     def filter(self, condition):
+        """
+        Returns a new query with a new filter added.
+
+        :param condition: Filter
+        :type condition: C or CombinedCondition
+
+        :returns: Query
+        :rtype: Query
+        """
+
         c = self._copy()
 
         if not isinstance(condition, (C, CombinedCondition)):
@@ -163,6 +254,16 @@ class Query(object):
         return c
 
     def exclude(self, condition):
+        """
+        Returns a new query with a new (negated) filter added.
+
+        :param condition: Filter
+        :type condition: C or CombinedCondition
+
+        :returns: Query
+        :rtype: Query
+        """
+
         c = self._copy()
 
         if not isinstance(condition, (C, CombinedCondition)):
@@ -175,6 +276,16 @@ class Query(object):
         return c
 
     def __getitem__(self, s):
+        """
+        Returns a new query with a slice of filtered elements.
+
+        :param s: query's slice
+        :type s: slice
+
+        :returns: Query
+        :rtype: Query
+        """
+
         c = self._copy()
 
         if not isinstance(s, slice):
@@ -185,12 +296,29 @@ class Query(object):
         return c
 
     def __iter__(self):
+        """
+        Executes the query and iterate through the result.
+
+        :returns: iterator on query's result
+        :rtype: iterator
+        """
+
         if self.result is None:
             self.result = self.manager.execute(self.ast)
 
         return iter(self.result)
 
     def update(self, *fields):
+        """
+        Update elements matching the query.
+
+        :param fields: Assignments
+        :type fields: list of A
+
+        :returns: Number of modified elements.
+        :rtype: int
+        """
+
         c = self._copy()
 
         fields_ast = []
@@ -208,6 +336,13 @@ class Query(object):
         return self.manager.execute(c.ast)
 
     def delete(self):
+        """
+        Delete elements matching the query.
+
+        :returns: Number of deleted elements.
+        :rtype: int 
+        """
+
         c = self._copy()
         c.ast.append(AST('delete', None))
 

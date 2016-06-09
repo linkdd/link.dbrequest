@@ -9,6 +9,16 @@ import json
 
 
 class Model(object):
+    """
+    Model class encapsulating elements in store.
+
+    :param driver: storage driver
+    :type driver: Driver
+
+    :param data: encapsulated data
+    :type data: dict
+    """
+
     __slots__ = ('driver', 'data')
 
     def __init__(self, driver, data, *args, **kwargs):
@@ -24,6 +34,13 @@ class Model(object):
         return 'Model({0})'.format(json.dumps(self.data))
 
     def _get_filter(self):
+        """
+        Convert data to filter matching the data.
+
+        :returns: Filter
+        :rtype: C or CombinedCondition
+        """
+
         condition = None
 
         for key, val in self.data.items():
@@ -36,16 +53,34 @@ class Model(object):
         return condition
 
     def _get_update(self):
+        """
+        Convert data to assignments.
+
+        :returns: Assignments
+        :rtype: list of A
+        """
+
         return [
             A(key, val).get_ast()
             for key, val in self.data.items()
         ]
 
     def save(self):
+        """
+        Save element into store.
+
+        :returns: Inserted document
+        :rtype: Model
+        """
+
         assignments = self._get_update()
         return self.driver.put_element(assignments)
 
     def delete(self):
+        """
+        Delete element from store.
+        """
+
         condition = self._get_filter()
 
         self.driver.remove_elements([
@@ -88,6 +123,15 @@ class Model(object):
 
 
 class Cursor(Iterator):
+    """
+    Cursor encapsulating storage driver's cursor or result.
+
+    :param driver: storage driver
+    :type driver: Driver
+
+    :param cursor: storage's cursor
+    """
+
     __slots__ = ('_cursor', 'driver')
 
     def __init__(self, driver, cursor, *args, **kwargs):
@@ -101,6 +145,16 @@ class Cursor(Iterator):
         return self._cursor
 
     def to_model(self, doc):
+        """
+        Convert raw element to Model.
+
+        :param doc: raw element
+        :type doc: dict
+
+        :returns: Element as Model
+        :rtype: Model
+        """
+
         return Model(self.driver, doc)
 
     def __len__(self):
