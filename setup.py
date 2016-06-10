@@ -15,7 +15,8 @@ LICENSE = 'MIT'
 REQUIREMENTS = [
     'b3j0f.conf>=0.3.18',
     'link.middleware>=0.10',
-    'six>=1.10.0'
+    'six>=1.10.0',
+    'mock>=2.0.0'
 ]
 
 CLASSIFIERS = [
