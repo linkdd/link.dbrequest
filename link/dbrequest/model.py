@@ -4,7 +4,7 @@ from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
 from link.dbrequest.ast import AST
 
-from six import Iterator
+from six import Iterator, iteritems
 import json
 
 
@@ -43,7 +43,7 @@ class Model(object):
 
         condition = None
 
-        for key, val in self.data.items():
+        for key, val in iteritems(self.data):
             if condition is None:
                 condition = C(key) == val
 
@@ -62,7 +62,7 @@ class Model(object):
 
         return [
             A(key, val)
-            for key, val in self.data.items()
+            for key, val in iteritems(self.data)
         ]
 
     def save(self):
