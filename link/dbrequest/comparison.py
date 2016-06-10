@@ -7,6 +7,10 @@ from copy import deepcopy
 
 
 class Comparable(object):
+    """
+    Base class for conditions, overriding logical operators.
+    Check if property exists by default.
+    """
 
     EXISTS = '?'
     LT = '<'
@@ -24,6 +28,19 @@ class Comparable(object):
         self.value = Value(True)
 
     def _compare(self, operator, value):
+        """
+        Set comparison operator and compared value.
+
+        :param operator: Comparison operator
+        :type operator: str
+
+        :param value: Compared value
+        :type value: Node, or any Python type
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         if not isinstance(value, Node):
             value = Value(value)
 
@@ -33,39 +50,134 @@ class Comparable(object):
         return self
 
     def __lt__(self, value):
+        """
+        Compare to value with operator <
+
+        :param value: compared value
+        :type value: Node, or any Python type
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         return self._compare(self.LT, value)
 
     def __le__(self, value):
+        """
+        Compare to value with operator <=
+
+        :param value: compared value
+        :type value: Node, or any Python type
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         return self._compare(self.LTE, value)
 
     def __eq__(self, value):
+        """
+        Compare to value with operator ==
+
+        :param value: compared value
+        :type value: Node, or any Python type
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         return self._compare(self.EQ, value)
 
     def __ne__(self, value):
+        """
+        Compare to value with operator !=
+
+        :param value: compared value
+        :type value: Node, or any Python type
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         return self._compare(self.NE, value)
 
     def __ge__(self, value):
+        """
+        Compare to value with operator >=
+
+        :param value: compared value
+        :type value: Node, or any Python type
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         return self._compare(self.GTE, value)
 
     def __gt__(self, value):
+        """
+        Compare to value with operator >
+
+        :param value: compared value
+        :type value: Node, or any Python type
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         return self._compare(self.GT, value)
 
     def __invert__(self):
+        """
+        Check if property does not exist
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         return self._compare(self.EXISTS, False)
 
     def __mod__(self, value):
+        """
+        Compare to value with operator <
+
+        :param value: compared value
+        :type value: Node, or any Python type
+
+        :returns: Itself
+        :rtype: Comparable
+        """
+
         return self._compare(self.LIKE, value)
 
 
 class CombinableCondition(object):
+    """
+    Combine conditions with boolean operators.
+    """
 
     AND = '&'
     OR = '|'
 
     def _combine(self, operator, value, _reversed):
-        if not isinstance(value, Node):
+        """
+        Combine condition with value using operator.
+
+        :param operator: Boolean operator
+        :type operator: str
+
+        :param value: Condition to combine with
+        :type value: CombinableCondition
+
+        :returns: Combined condition
+        :rtype: CombinedCondition
+        """
+
+        if not isinstance(value, CombinableCondition):
             raise TypeError(
-                'Expected Node value, got {0}'.format(value.__class__.__name__)
+                'Expected CombinableCondition value, got {0}'.format(
+                    value.__class__.__name__
+                )
             )
 
         if _reversed:
@@ -89,7 +201,23 @@ class CombinableCondition(object):
         return self._combine(self.OR, value, True)
 
 
-class CombinedCondition(Node):
+class CombinedCondition(Node, CombinableCondition):
+    """
+    Combination of two conditions.
+
+    :param left: left condition
+    :type left: CombinableCondition
+
+    :param operator: combination condition
+    :type operator: str
+
+    :param right: right condition
+    :type right: CombinableCondition
+
+    :param inverted: Equivalent of ``not (<condition>)`` (default: False)
+    :type inverted: bool
+    """
+
     def __init__(self, left, operator, right, inverted=False, *args, **kwargs):
         super(CombinedCondition, self).__init__(operator, *args, **kwargs)
 
@@ -111,12 +239,23 @@ class CombinedCondition(Node):
             return ast
 
     def __invert__(self):
+        """
+        Negates the combined condition
+
+        :returns: New combined condition
+        :rtype: CombinedCondition
+        """
+
         c = deepcopy(self)
         c.inverted = True
         return c
 
 
 class C(Node, Comparable, CombinableCondition):
+    """
+    Condition on a property.
+    """
+
     def get_ast(self):
         return [
             AST('prop', self.name),

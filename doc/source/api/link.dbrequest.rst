@@ -20,6 +20,14 @@ link.dbrequest.driver module
     :undoc-members:
     :show-inheritance:
 
+link.dbrequest.model module
+---------------------------
+
+.. automodule:: link.dbrequest.model
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 link.dbrequest.ast module
 -------------------------
 

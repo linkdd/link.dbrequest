@@ -129,6 +129,48 @@ class ExpressionTest(UTCase):
             ]
         )
 
+    def test_complex_expr(self):
+        e = (E('foo') + E('bar')) + (E('baz') + E('biz'))
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                [
+                    {
+                        'name': 'ref',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'op',
+                        'val': '+'
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'bar'
+                    }
+                ],
+                {
+                    'name': 'op',
+                    'val': '+'
+                },
+                [
+                    {
+                        'name': 'ref',
+                        'val': 'baz'
+                    },
+                    {
+                        'name': 'op',
+                        'val': '+'
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'biz'
+                    }
+                ]
+            ]
+        )
+
 
 if __name__ == '__main__':
     main()

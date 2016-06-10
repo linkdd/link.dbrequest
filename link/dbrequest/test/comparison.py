@@ -378,7 +378,89 @@ class ComparisonTest(UTCase):
             }
         )
 
+    def test_complex_condition(self):
+        c1 = (C('foo') == 'bar') & (C('bar') > 5)
+        c2 = (C('foo') == 'bar') & (C('bar') > 5)
+        c = c1 & c2
+        ast = c.get_ast()
 
+        self.assertEqual(
+            ast,
+            [
+                [
+                    [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'cond',
+                            'val': '=='
+                        },
+                        {
+                            'name': 'val',
+                            'val': 'bar'
+                        }
+                    ],
+                    {
+                        'name': 'join',
+                        'val': '&'
+                    },
+                    [
+                        {
+                            'name': 'prop',
+                            'val': 'bar'
+                        },
+                        {
+                            'name': 'cond',
+                            'val': '>'
+                        },
+                        {
+                            'name': 'val',
+                            'val': 5
+                        }
+                    ]
+                ],
+                {
+                    'name': 'join',
+                    'val': '&'
+                },
+                [
+                    [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'cond',
+                            'val': '=='
+                        },
+                        {
+                            'name': 'val',
+                            'val': 'bar'
+                        }
+                    ],
+                    {
+                        'name': 'join',
+                        'val': '&'
+                    },
+                    [
+                        {
+                            'name': 'prop',
+                            'val': 'bar'
+                        },
+                        {
+                            'name': 'cond',
+                            'val': '>'
+                        },
+                        {
+                            'name': 'val',
+                            'val': 5
+                        }
+                    ]
+                ]
+            ]
+        )
 
 
 if __name__ == '__main__':
