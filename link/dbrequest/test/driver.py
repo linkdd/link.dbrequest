@@ -29,20 +29,23 @@ class DriverTest(UTCase):
     def test_count_elements(self):
         self.driver._process_query = MagicMock(return_value=3)
         ast = [
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'cond',
-                    'val': '=='
-                },
-                {
-                    'name': 'val',
-                    'val': 'bar'
-                }
-            ]
+            {
+                'name': 'filter',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'cond',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
+            }
         ]
 
         result = self.driver.count_elements(ast)
@@ -105,20 +108,23 @@ class DriverTest(UTCase):
 
         self.driver._process_query = MagicMock(return_value=fake_cursor)
         ast = [
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'cond',
-                    'val': '=='
-                },
-                {
-                    'name': 'val',
-                    'val': 'bar'
-                }
-            ]
+            {
+                'name': 'filter',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'cond',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
+            }
         ]
 
         cursor = self.driver.find_elements(ast)
@@ -136,20 +142,23 @@ class DriverTest(UTCase):
     def test_update_elements(self):
         self.driver._process_query = MagicMock(return_value=3)
         filter_ast = [
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'cond',
-                    'val': '=='
-                },
-                {
-                    'name': 'val',
-                    'val': 'bar'
-                }
-            ]
+            {
+                'name': 'filter',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'cond',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
+            }
         ]
         update_ast = [
             [
@@ -179,20 +188,23 @@ class DriverTest(UTCase):
     def test_remove_elements(self):
         self.driver._process_query = MagicMock(return_value=3)
         ast = [
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'cond',
-                    'val': '=='
-                },
-                {
-                    'name': 'val',
-                    'val': 'bar'
-                }
-            ]
+            {
+                'name': 'filter',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'cond',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
+            }
         ]
 
         result = self.driver.remove_elements(ast)

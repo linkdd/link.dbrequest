@@ -61,7 +61,7 @@ class Model(object):
         """
 
         return [
-            A(key, val).get_ast()
+            A(key, val)
             for key, val in self.data.items()
         ]
 
@@ -74,7 +74,7 @@ class Model(object):
         """
 
         assignments = self._get_update()
-        return self.driver.put_element(assignments)
+        return self.driver.put_element([a.get_ast() for a in assignments])
 
     def delete(self):
         """
@@ -96,14 +96,9 @@ class Model(object):
     def __delitem__(self, prop):
         del self.data[prop]
 
-    def __getattribute__(self, prop):
-        if prop in ['data', 'driver', '__dict__']:
-            return super(Model, self).__getattribute__(prop)
-
+    def __getattr__(self, prop):
         if prop not in self.data:
-            raise AttributeError(
-                'No attribute "{0}" found in data'.format(prop)
-            )
+            return super(Model, self).__getattribute__(prop)
 
         return self.data[prop]
 
