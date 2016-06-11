@@ -32,6 +32,66 @@ class QueryManagerTest(UTCase):
         self.assertEqual(q.result, None)
         self.assertTrue(q.manager is self.query)
 
+    def test_from_ast(self):
+        expected = [
+            {
+                'name': 'filter',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'cond',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
+            }
+        ]
+
+        attrs = {
+            'find_elements.return_value': []
+        }
+        self.backend.configure_mock(**attrs)
+
+        q = self.query.from_ast(expected)
+
+        self.assertIsInstance(q, Query)
+        self.assertEqual(q.ast, expected)
+
+        result = list(q)
+
+        self.backend.find_elements.assert_called_with(expected)
+
+    def test_to_ast(self):
+        expected = [
+            {
+                'name': 'filter',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'cond',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
+            }
+        ]
+
+        q = self.query.all().filter(C('foo') == 'bar')
+
+        self.assertEqual(q.to_ast(), expected)
+
     def test_validate_ast(self):
         with self.assertRaises(ASTSingleStatementError):
             self.query.validate_ast({

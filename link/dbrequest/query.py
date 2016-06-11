@@ -39,6 +39,25 @@ class QueryManager(Middleware):
 
         self.backend = backend
 
+    def from_ast(self, ast):
+        """
+        Create a query from the provided AST.
+
+        :param ast: AST
+        :type ast: list
+
+        :rtype: Query
+
+        :raises ASTError: if provided AST is not valid.
+        """
+
+        self.validate_ast(ast)
+
+        q = Query(self)
+        q.ast = deepcopy(ast)
+
+        return q
+
     def all(self):
         """
         Get a query selecting all elements in store.
@@ -205,6 +224,16 @@ class Query(object):
         c = Query(self.manager)
         c.ast = deepcopy(self.ast)
         return c
+
+    def to_ast(self):
+        """
+        Returns a copy of query's AST
+
+        :returns: AST
+        :rtype: list
+        """
+
+        return deepcopy(self.ast)
 
     def count(self):
         """
