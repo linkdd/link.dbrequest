@@ -158,6 +158,7 @@ class CombinableCondition(object):
 
     AND = '&'
     OR = '|'
+    XOR = '^'
 
     def _combine(self, operator, value, _reversed):
         """
@@ -194,11 +195,17 @@ class CombinableCondition(object):
     def __or__(self, value):
         return self._combine(self.OR, value, False)
 
+    def __xor__(self, value):
+        return self._combine(self.XOR, value, False)
+
     def __rand__(self, value):
         return self._combine(self.AND, value, True)
 
     def __ror__(self, value):
         return self._combine(self.OR, value, True)
+
+    def __rxor__(self, value):
+        return self._combine(self.XOR, value, True)
 
 
 class CombinedCondition(Node, CombinableCondition):

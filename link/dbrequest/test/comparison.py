@@ -267,6 +267,48 @@ class ComparisonTest(UTCase):
             ]
         )
 
+    def test_property_xor(self):
+        c = (C('foo') == 'bar') ^ (C('bar') > 5)
+        ast = c.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'cond',
+                        'val': '=='
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ],
+                {
+                    'name': 'join',
+                    'val': '^'
+                },
+                [
+                    {
+                        'name': 'prop',
+                        'val': 'bar'
+                    },
+                    {
+                        'name': 'cond',
+                        'val': '>'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            ]
+        )
+
     def test_property_andor(self):
         c = ((C('foo') == 'bar') & (C('bar') > 5)) | (~C('baz'))
         ast = c.get_ast()
