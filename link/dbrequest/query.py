@@ -108,7 +108,8 @@ class QueryManager(Middleware):
                 'exclude',
                 'update',
                 'delete',
-                'count'
+                'count',
+                'slice'
             ]
             last_statements = ['update', 'delete', 'get', 'count']
             l = len(ast)
@@ -166,7 +167,16 @@ class QueryManager(Middleware):
             return self.backend.count_elements(ast[:-1])
 
         else:
-            return self.backend.find_elements(ast)
+            result = self.backend.find_elements(ast)
+
+            if ast[-1]['name'] == 'get':
+                if len(result) == 0:
+                    result = None
+
+                else:
+                    result = result[0]
+
+            return result
 
 
 class Query(object):
@@ -340,7 +350,7 @@ class Query(object):
         Delete elements matching the query.
 
         :returns: Number of deleted elements.
-        :rtype: int 
+        :rtype: int
         """
 
         c = self._copy()

@@ -81,7 +81,7 @@ class DriverTest(UTCase):
 
         result = self.driver.put_element(ast)
 
-        self.assertTrue(isinstance(result, Model))
+        self.assertIsInstance(result, Model)
         self.assertEqual(result.data, expected)
         self.driver._process_query.assert_called_with(self.conn, {
             'type': Driver.QUERY_CREATE,
@@ -129,8 +129,8 @@ class DriverTest(UTCase):
 
         cursor = self.driver.find_elements(ast)
 
-        self.assertTrue(isinstance(cursor, Cursor))
-        self.assertTrue(isinstance(cursor[0], Model))
+        self.assertIsInstance(cursor, Cursor)
+        self.assertIsInstance(cursor[0], Model)
         self.assertEqual(len(cursor), len(expected))
         self.assertEqual([model.data for model in cursor], expected)
 

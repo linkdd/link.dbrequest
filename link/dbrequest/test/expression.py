@@ -42,6 +42,28 @@ class ExpressionTest(UTCase):
             ]
         )
 
+    def test_expr_reversed(self):
+        e = 5 * E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '*'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
     def test_expr_func(self):
         e = F('funcname', E('propname'), E('propname') * 5)
         ast = e.get_ast()

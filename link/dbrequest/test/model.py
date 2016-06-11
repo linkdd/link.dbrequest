@@ -86,7 +86,7 @@ class ModelTest(UTCase):
             }
         ]
 
-        self.assertTrue(isinstance(ast, list))
+        self.assertIsInstance(ast, list)
         self.assertEqual(len(ast), 3)
         self.assertEqual(ast[1], operator)
         self.assertIn(cond1, ast)
@@ -123,7 +123,7 @@ class ModelTest(UTCase):
             }
         ]
 
-        self.assertTrue(isinstance(ast, list))
+        self.assertIsInstance(ast, list)
         self.assertEqual(len(ast), 2)
         self.assertIn(a1, ast)
         self.assertIn(a2, ast)
@@ -172,7 +172,7 @@ class ModelTest(UTCase):
         args = self.driver.put_element.call_args[0]
 
         self.assertEqual(len(args), 1)
-        self.assertTrue(isinstance(args[0], list))
+        self.assertIsInstance(args[0], list)
         self.assertIn(a1, args[0])
         self.assertIn(a2, args[0])
 
@@ -219,11 +219,11 @@ class ModelTest(UTCase):
         args = self.driver.remove_elements.call_args[0]
 
         self.assertEqual(len(args), 1)
-        self.assertTrue(isinstance(args[0], list))
+        self.assertIsInstance(args[0], list)
         self.assertEqual(len(args[0]), 1)
-        self.assertTrue(isinstance(args[0][0], dict))
+        self.assertIsInstance(args[0][0], dict)
         self.assertTrue(args[0][0]['name'], 'filter')
-        self.assertTrue(isinstance(args[0][0]['val'], list))
+        self.assertIsInstance(args[0][0]['val'], list)
         self.assertEqual(len(args[0][0]['val']), 3)
         self.assertEqual(args[0][0]['val'][1], operator)
         self.assertIn(cond1, args[0][0]['val'])
