@@ -37,7 +37,7 @@ class QueryManager(Middleware):
         if not isinstance(backend, Middleware):
             raise TypeError('Provided backend is not a middleware')
 
-        self.backend = backend
+        self._backend = backend
 
     def from_ast(self, ast):
         """
@@ -159,7 +159,7 @@ class QueryManager(Middleware):
 
         if isinstance(ast, dict):
             if ast['name'] == 'get':
-                elements = self.backend.find_elements(ast['val'])
+                elements = self._backend.find_elements(ast['val'])
 
                 if len(elements) == 0:
                     return None
@@ -168,25 +168,25 @@ class QueryManager(Middleware):
                     return elements[0]
 
             elif ast['name'] == 'create':
-                return self.backend.put_element(ast['val'])
+                return self._backend.put_element(ast['val'])
 
         elif len(ast) == 0:
-            return self.backend.find_elements(ast)
+            return self._backend.find_elements(ast)
 
         elif ast[-1]['name'] == 'update':
-            return self.backend.update_elements(
+            return self._backend.update_elements(
                 ast[:-1],
                 ast[-1]['val']
             )
 
         elif ast[-1]['name'] == 'delete':
-            return self.backend.remove_elements(ast[:-1])
+            return self._backend.remove_elements(ast[:-1])
 
         elif ast[-1]['name'] == 'count':
-            return self.backend.count_elements(ast[:-1])
+            return self._backend.count_elements(ast[:-1])
 
         else:
-            result = self.backend.find_elements(ast)
+            result = self._backend.find_elements(ast)
 
             if ast[-1]['name'] == 'get':
                 if len(result) == 0:
