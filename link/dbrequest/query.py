@@ -128,9 +128,10 @@ class QueryManager(Middleware):
                 'update',
                 'delete',
                 'count',
-                'slice'
+                'slice',
+                'group'
             ]
-            last_statements = ['update', 'delete', 'get', 'count']
+            last_statements = ['update', 'delete', 'get', 'count', 'group']
             l = len(ast)
 
             for i in range(l):
@@ -384,5 +385,20 @@ class Query(object):
 
         c = self._copy()
         c.ast.append(AST('delete', None))
+
+        return self.manager.execute(c.ast)
+
+    def group(self, expression):
+        """
+        Group elements matching the query using the expression.
+
+        :param expression: Grouping expression
+        :type expression: CombinableExpression
+
+        :returns: Grouped elements.
+        """
+
+        c = self._copy()
+        c.ast.append(AST('group', expression.get_ast()))
 
         return self.manager.execute(c.ast)

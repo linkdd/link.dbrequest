@@ -20,7 +20,93 @@ class ExpressionTest(UTCase):
             }
         )
 
-    def test_expr_math(self):
+    def test_expr_add(self):
+        e = E('propname') + 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '+'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 + E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '+'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_sub(self):
+        e = E('propname') - 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '-'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 - E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '-'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_mul(self):
         e = E('propname') * 5
         ast = e.get_ast()
 
@@ -42,7 +128,6 @@ class ExpressionTest(UTCase):
             ]
         )
 
-    def test_expr_reversed(self):
         e = 5 * E('propname')
         ast = e.get_ast()
 
@@ -56,6 +141,307 @@ class ExpressionTest(UTCase):
                 {
                     'name': 'op',
                     'val': '*'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_div(self):
+        e = E('propname') / 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '/'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 / E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '/'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_pow(self):
+        e = E('propname') ** 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '**'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 ** E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '**'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_lshift(self):
+        e = E('propname') << 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '<<'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 << E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '<<'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_rshift(self):
+        e = E('propname') >> 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '>>'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 >> E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '>>'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_and(self):
+        e = E('propname') & 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '&'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 & E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '&'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_or(self):
+        e = E('propname') | 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '|'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 | E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '|'
+                },
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                }
+            ]
+        )
+
+    def test_expr_xor(self):
+        e = E('propname') ^ 5
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'ref',
+                    'val': 'propname'
+                },
+                {
+                    'name': 'op',
+                    'val': '^'
+                },
+                {
+                    'name': 'val',
+                    'val': 5
+                }
+            ]
+        )
+
+        e = 5 ^ E('propname')
+        ast = e.get_ast()
+
+        self.assertEqual(
+            ast,
+            [
+                {
+                    'name': 'val',
+                    'val': 5
+                },
+                {
+                    'name': 'op',
+                    'val': '^'
                 },
                 {
                     'name': 'ref',

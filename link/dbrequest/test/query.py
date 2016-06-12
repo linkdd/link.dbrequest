@@ -9,6 +9,7 @@ from link.dbrequest.driver import Driver
 
 from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
+from link.dbrequest.expression import E
 
 from link.dbrequest.ast import ASTSingleStatementError
 from link.dbrequest.ast import ASTLastStatementError
@@ -98,7 +99,7 @@ class QueryManagerTest(UTCase):
                 'name': 'not_get_or_create'
             })
 
-        for stmt in ['update', 'delete', 'get', 'count']:
+        for stmt in ['update', 'delete', 'get', 'count', 'group']:
             with self.assertRaises(ASTLastStatementError):
                 self.query.validate_ast([
                     {
@@ -470,6 +471,27 @@ class QueryManagerTest(UTCase):
 
         self.assertEqual(result, 3)
         self.backend.remove_elements.assert_called_with([])
+
+    def test_query_group(self):
+        expected = {'foo': ['bar', 'baz', 'biz']}
+        attrs = {
+            'find_elements.return_value': expected
+        }
+        self.backend.configure_mock(**attrs)
+
+        result = self.query.all().group(E('foo'))
+
+        self.assertEqual(result, expected)
+
+        self.backend.find_elements.assert_called_with([
+            {
+                'name': 'group',
+                'val': {
+                    'name': 'ref',
+                    'val': 'foo'
+                }
+            }
+        ])
 
 
 if __name__ == '__main__':
