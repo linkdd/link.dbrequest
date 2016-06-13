@@ -9,7 +9,7 @@ from link.dbrequest.driver import Driver
 
 from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
-from link.dbrequest.expression import E
+from link.dbrequest.expression import E, F
 
 from link.dbrequest.ast import ASTSingleStatementError
 from link.dbrequest.ast import ASTLastStatementError
@@ -64,7 +64,7 @@ class QueryManagerTest(UTCase):
         self.assertIsInstance(q, Query)
         self.assertEqual(q.ast, expected)
 
-        result = list(q)
+        list(q)
 
         self.backend.find_elements.assert_called_with(expected)
 
@@ -479,7 +479,7 @@ class QueryManagerTest(UTCase):
         }
         self.backend.configure_mock(**attrs)
 
-        result = self.query.all().group(E('foo'))
+        result = self.query.all().group('foo', F('sum', E('bar')))
 
         self.assertEqual(result, expected)
 
@@ -487,8 +487,21 @@ class QueryManagerTest(UTCase):
             {
                 'name': 'group',
                 'val': {
-                    'name': 'ref',
-                    'val': 'foo'
+                    'key': 'foo',
+                    'expressions': [
+                        {
+                            'name': 'func',
+                            'val': {
+                                'func': 'sum',
+                                'args': [
+                                    {
+                                        'name': 'ref',
+                                        'val': 'bar'
+                                    }
+                                ]
+                            }
+                        }
+                    ]
                 }
             }
         ])

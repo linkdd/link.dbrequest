@@ -388,17 +388,26 @@ class Query(object):
 
         return self.manager.execute(c.ast)
 
-    def group(self, expression):
+    def group(self, key, *expressions):
         """
-        Group elements matching the query using the expression.
+        Group elements by key matching the query using the expressions.
 
-        :param expression: Grouping expression
-        :type expression: CombinableExpression
+        :param key: Key used to group elements
+        :type key: str
+
+        :param expressions: Expressions
+        :type expressions: list of CombinableExpression
 
         :returns: Grouped elements.
         """
 
         c = self._copy()
-        c.ast.append(AST('group', expression.get_ast()))
+        c.ast.append(AST('group', {
+            'key': key,
+            'expressions': [
+                expression.get_ast()
+                for expression in expressions
+            ]
+        }))
 
         return self.manager.execute(c.ast)
