@@ -14,6 +14,8 @@ from link.dbrequest.ast import ASTInvalidFormatError
 from link.dbrequest.comparison import C, CombinedCondition
 from link.dbrequest.assignment import A
 
+from link.dbrequest.driver import Driver
+
 from copy import deepcopy
 
 
@@ -29,13 +31,11 @@ class QueryManager(Middleware):
     :type backend: Driver
     """
 
+    __constraints__ = [Driver]
     __protocols__ = ['query']
 
     def __init__(self, backend, *args, **kwargs):
         super(QueryManager, self).__init__(*args, **kwargs)
-
-        if not isinstance(backend, Middleware):
-            raise TypeError('Provided backend is not a middleware')
 
         self._backend = backend
 
