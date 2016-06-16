@@ -14,7 +14,7 @@ AUTHOR_EMAIL = 'david.jose.delassus@gmail.com'
 LICENSE = 'MIT'
 REQUIREMENTS = [
     'b3j0f.conf>=0.3.18',
-    'link.middleware>=0.11',
+    'link.middleware>=0.12',
     'six>=1.10.0',
     'mock>=2.0.0'
 ]
