@@ -34,11 +34,6 @@ class QueryManager(Middleware):
     __constraints__ = [Driver]
     __protocols__ = ['query']
 
-    def __init__(self, backend, *args, **kwargs):
-        super(QueryManager, self).__init__(*args, **kwargs)
-
-        self._backend = backend
-
     def from_ast(self, ast):
         """
         Create a query from the provided AST.
@@ -160,7 +155,9 @@ class QueryManager(Middleware):
 
         if isinstance(ast, dict):
             if ast['name'] == 'get':
-                elements = self._backend.find_elements(ast['val'])
+                elements = self.get_child_middleware().find_elements(
+                    ast['val']
+                )
 
                 if len(elements) == 0:
                     return None
@@ -169,25 +166,25 @@ class QueryManager(Middleware):
                     return elements[0]
 
             elif ast['name'] == 'create':
-                return self._backend.put_element(ast['val'])
+                return self.get_child_middleware().put_element(ast['val'])
 
         elif len(ast) == 0:
-            return self._backend.find_elements(ast)
+            return self.get_child_middleware().find_elements(ast)
 
         elif ast[-1]['name'] == 'update':
-            return self._backend.update_elements(
+            return self.get_child_middleware().update_elements(
                 ast[:-1],
                 ast[-1]['val']
             )
 
         elif ast[-1]['name'] == 'delete':
-            return self._backend.remove_elements(ast[:-1])
+            return self.get_child_middleware().remove_elements(ast[:-1])
 
         elif ast[-1]['name'] == 'count':
-            return self._backend.count_elements(ast[:-1])
+            return self.get_child_middleware().count_elements(ast[:-1])
 
         else:
-            result = self._backend.find_elements(ast)
+            result = self.get_child_middleware().find_elements(ast)
 
             if ast[-1]['name'] == 'get':
                 if len(result) == 0:

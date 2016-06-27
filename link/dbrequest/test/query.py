@@ -23,7 +23,8 @@ class QueryManagerTest(UTCase):
 
         self.backend = Mock()
         self.backend.__class__ = Driver
-        self.query = QueryManager(self.backend)
+        self.query = QueryManager()
+        self.query.set_child_middleware(self.backend)
 
     def test_all(self):
         q = self.query.all()
