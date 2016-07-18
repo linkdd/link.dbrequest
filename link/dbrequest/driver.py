@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from b3j0f.conf import Configurable, category
-from link.middleware.connectable import ConnectableMiddleware
 from link.dbrequest.model import Model, Cursor
-from link.dbrequest import CONF_BASE_PATH
+from link.feature import Feature
 
 
-@Configurable(
-    paths='{0}/driver.conf'.format(CONF_BASE_PATH),
-    conf=category('DRIVER')
-)
-class Driver(ConnectableMiddleware):
+class Driver(Feature):
     """
-    Abstract storage driver middleware.
+    Abstract storage driver feature.
     """
 
-    __protocols__ = ['storage']
+    name = 'query'
 
     QUERY_COUNT = 'count'
     QUERY_CREATE = 'save'
@@ -26,12 +20,9 @@ class Driver(ConnectableMiddleware):
     model_class = Model
     cursor_class = Cursor
 
-    def _process_query(self, conn, query):
+    def process_query(self, query):
         """
         This method must be overriden, handles every query made to the storage.
-
-        :param conn: storage's connection
-        :type conn: as returned by ``_connect()``
 
         :param query: query to process
         :type query: dict
@@ -52,7 +43,7 @@ class Driver(ConnectableMiddleware):
         :rtype: int
         """
 
-        return self._process_query(self.conn, {
+        return self.process_query({
             'type': Driver.QUERY_COUNT,
             'filter': ast
         })
@@ -68,7 +59,7 @@ class Driver(ConnectableMiddleware):
         :rtype: Model
         """
 
-        result = self._process_query(self.conn, {
+        result = self.process_query({
             'type': Driver.QUERY_CREATE,
             'update': ast
         })
@@ -86,7 +77,7 @@ class Driver(ConnectableMiddleware):
         :rtype: Cursor
         """
 
-        result = self._process_query(self.conn, {
+        result = self.process_query({
             'type': Driver.QUERY_READ,
             'filter': ast
         })
@@ -107,7 +98,7 @@ class Driver(ConnectableMiddleware):
         :rtype: int
         """
 
-        return self._process_query(self.conn, {
+        return self.process_query({
             'type': Driver.QUERY_UPDATE,
             'filter': filter_ast,
             'update': update_ast
@@ -124,7 +115,7 @@ class Driver(ConnectableMiddleware):
         :rtype: int
         """
 
-        return self._process_query(self.conn, {
+        return self.process_query({
             'type': Driver.QUERY_DELETE,
             'filter': ast
         })

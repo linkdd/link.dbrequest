@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from b3j0f.utils.ut import UTCase
-from mock import Mock
+from mock import MagicMock, Mock
 from unittest import main
 
+from link.middleware.core import Middleware
+from link.feature import Feature, addfeatures
+
 from link.dbrequest.query import QueryManager, Query
-from link.dbrequest.driver import Driver
 
 from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
@@ -21,10 +23,18 @@ class QueryManagerTest(UTCase):
     def setUp(self):
         self.inserted_doc = {'_id': 'some id', 'foo': 'bar'}
 
-        self.backend = Mock()
-        self.backend.__class__ = Driver
+        self.feature = Mock()
+
+        featurecls = MagicMock(return_value=self.feature)
+        featurecls.__class__ = type
+        featurecls.name = 'query'
+        featurecls.mro = MagicMock(return_value=[Feature])
+
+        cls = type('DummyDriver', (Middleware,), {})
+        cls = addfeatures([featurecls])(cls)
+
         self.query = QueryManager()
-        self.query.set_child_middleware(self.backend)
+        self.query.set_child_middleware(cls())
 
     def test_all(self):
         q = self.query.all()
@@ -58,7 +68,7 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': []
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         q = self.query.from_ast(expected)
 
@@ -67,7 +77,7 @@ class QueryManagerTest(UTCase):
 
         list(q)
 
-        self.backend.find_elements.assert_called_with(expected)
+        self.feature.find_elements.assert_called_with(expected)
 
     def test_to_ast(self):
         expected = [
@@ -139,13 +149,13 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': []
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.get(C('foo'))
 
         self.assertIsNone(result)
 
-        self.backend.find_elements.assert_called_with([
+        self.feature.find_elements.assert_called_with([
             {
                 'name': 'prop',
                 'val': 'foo'
@@ -165,13 +175,13 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': [expected]
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.get(C('foo'))
 
         self.assertEqual(result, expected)
 
-        self.backend.find_elements.assert_called_with([
+        self.feature.find_elements.assert_called_with([
             {
                 'name': 'prop',
                 'val': 'foo'
@@ -191,13 +201,13 @@ class QueryManagerTest(UTCase):
         attrs = {
             'put_element.return_value': expected
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.create(A('foo', 'bar'))
 
         self.assertEqual(result, expected)
 
-        self.backend.put_element.assert_called_with([
+        self.feature.put_element.assert_called_with([
             [
                 {
                     'name': 'prop',
@@ -229,13 +239,13 @@ class QueryManagerTest(UTCase):
         attrs = {
             'count_elements.return_value': 3
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all().filter(C('foo') == 'bar').count()
 
         self.assertEqual(result, 3)
 
-        self.backend.count_elements.assert_called_with([{
+        self.feature.count_elements.assert_called_with([{
             'name': 'filter',
             'val': [
                 {
@@ -257,13 +267,13 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': []
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all().get(C('foo'))
 
         self.assertIsNone(result)
 
-        self.backend.find_elements.assert_called_with([
+        self.feature.find_elements.assert_called_with([
             {
                 'name': 'get',
                 'val': [
@@ -288,13 +298,13 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': [expected]
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all().get(C('foo'))
 
         self.assertEqual(result, expected)
 
-        self.backend.find_elements.assert_called_with([
+        self.feature.find_elements.assert_called_with([
             {
                 'name': 'get',
                 'val': [
@@ -323,7 +333,7 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': expected
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all().filter(C('foo') == 'bar')
 
@@ -332,7 +342,7 @@ class QueryManagerTest(UTCase):
         result = list(result)
         self.assertEqual(result, expected)
 
-        self.backend.find_elements.assert_called_with([
+        self.feature.find_elements.assert_called_with([
             {
                 'name': 'filter',
                 'val': [
@@ -361,7 +371,7 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': expected
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all().exclude(C('foo') == 'bar')
 
@@ -370,7 +380,7 @@ class QueryManagerTest(UTCase):
         result = list(result)
         self.assertEqual(result, expected)
 
-        self.backend.find_elements.assert_called_with([
+        self.feature.find_elements.assert_called_with([
             {
                 'name': 'exclude',
                 'val': [
@@ -398,7 +408,7 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': expected
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all()[1:2]
 
@@ -407,7 +417,7 @@ class QueryManagerTest(UTCase):
         result = list(result)
         self.assertEqual(result, expected)
 
-        self.backend.find_elements.assert_called_with([
+        self.feature.find_elements.assert_called_with([
             {
                 'name': 'slice',
                 'val': slice(1, 2)
@@ -423,7 +433,7 @@ class QueryManagerTest(UTCase):
         attrs = {
             'find_elements.return_value': expected
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         query = self.query.all()
 
@@ -435,18 +445,18 @@ class QueryManagerTest(UTCase):
         result2 = list(query)
         self.assertEqual(result2, expected)
 
-        self.backend.find_elements.assert_called_once_with([])
+        self.feature.find_elements.assert_called_once_with([])
 
     def test_query_update(self):
         attrs = {
             'update_elements.return_value': 3
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all().update(A('foo', 'bar'))
 
         self.assertEqual(result, 3)
-        self.backend.update_elements.assert_called_with([], [
+        self.feature.update_elements.assert_called_with([], [
             [
                 {
                     'name': 'prop',
@@ -466,25 +476,25 @@ class QueryManagerTest(UTCase):
         attrs = {
             'remove_elements.return_value': 3
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all().delete()
 
         self.assertEqual(result, 3)
-        self.backend.remove_elements.assert_called_with([])
+        self.feature.remove_elements.assert_called_with([])
 
     def test_query_group(self):
         expected = {'foo': ['bar', 'baz', 'biz']}
         attrs = {
             'find_elements.return_value': expected
         }
-        self.backend.configure_mock(**attrs)
+        self.feature.configure_mock(**attrs)
 
         result = self.query.all().group('foo', F('sum', E('bar')))
 
         self.assertEqual(result, expected)
 
-        self.backend.find_elements.assert_called_with([
+        self.feature.find_elements.assert_called_with([
             {
                 'name': 'group',
                 'val': {

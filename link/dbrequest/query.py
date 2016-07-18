@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from b3j0f.conf import Configurable, category
-
-from link.middleware.core import Middleware
-from link.dbrequest import CONF_BASE_PATH
+from link.middleware.core import Middleware, register_middleware
+from link.feature import getfeature
 
 from link.dbrequest.ast import AST
 from link.dbrequest.ast import ASTSingleStatementError
@@ -19,10 +17,7 @@ from link.dbrequest.driver import Driver
 from copy import deepcopy
 
 
-@Configurable(
-    paths='{0}/manager.conf'.format(CONF_BASE_PATH),
-    conf=category('QUERY')
-)
+@register_middleware
 class QueryManager(Middleware):
     """
     Manage storage backend and provide query system for it.
@@ -31,7 +26,6 @@ class QueryManager(Middleware):
     :type backend: Driver
     """
 
-    __constraints__ = [Driver]
     __protocols__ = ['query']
 
     def from_ast(self, ast):
@@ -194,6 +188,19 @@ class QueryManager(Middleware):
                     result = result[0]
 
             return result
+
+    def set_child_middleware(self, child):
+        super(QueryManager, self).set_child_middleware(child)
+
+        try:
+            feature = getfeature(child, Driver.name)
+
+        except AttributeError:
+            raise Middleware.Error(
+                'Child middleware has no feature "{0}"'.format(Driver.name)
+            )
+
+        self._child = feature
 
 
 class Query(object):

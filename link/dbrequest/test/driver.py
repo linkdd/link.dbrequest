@@ -10,24 +10,10 @@ from link.dbrequest.driver import Driver
 
 class DriverTest(UTCase):
     def setUp(self):
-        self.conn = 'myconn'
-
-        self.driver = Driver()
-        self.driver._connect = MagicMock(return_value=self.conn)
-        self.driver._disconnect = MagicMock()
-        self.driver._isconnected = MagicMock(
-            side_effect=lambda conn: conn is not None
-        )
-
-    def tearDown(self):
-        self.driver.disconnect()
-
-        self.driver._connect.assert_called_once_with()
-        self.driver._disconnect.assert_called_once_with(self.conn)
-        self.driver._isconnected.assert_any_call(self.conn)
+        self.driver = Driver(None)
 
     def test_count_elements(self):
-        self.driver._process_query = MagicMock(return_value=3)
+        self.driver.process_query = MagicMock(return_value=3)
         ast = [
             {
                 'name': 'filter',
@@ -51,7 +37,7 @@ class DriverTest(UTCase):
         result = self.driver.count_elements(ast)
 
         self.assertEqual(result, 3)
-        self.driver._process_query.assert_called_with(self.conn, {
+        self.driver.process_query.assert_called_with({
             'type': Driver.QUERY_COUNT,
             'filter': ast
         })
@@ -62,7 +48,7 @@ class DriverTest(UTCase):
             'foo': 'bar'
         }
 
-        self.driver._process_query = MagicMock(return_value=expected)
+        self.driver.process_query = MagicMock(return_value=expected)
         ast = [
             [
                 {
@@ -83,7 +69,7 @@ class DriverTest(UTCase):
 
         self.assertIsInstance(result, Model)
         self.assertEqual(result.data, expected)
-        self.driver._process_query.assert_called_with(self.conn, {
+        self.driver.process_query.assert_called_with({
             'type': Driver.QUERY_CREATE,
             'update': ast
         })
@@ -106,7 +92,7 @@ class DriverTest(UTCase):
         fake_cursor.__len__ = lambda self: len(expected)
         fake_cursor.__getitem__ = lambda self, idx: expected.__getitem__(idx)
 
-        self.driver._process_query = MagicMock(return_value=fake_cursor)
+        self.driver.process_query = MagicMock(return_value=fake_cursor)
         ast = [
             {
                 'name': 'filter',
@@ -134,13 +120,13 @@ class DriverTest(UTCase):
         self.assertEqual(len(cursor), len(expected))
         self.assertEqual([model.data for model in cursor], expected)
 
-        self.driver._process_query.assert_called_with(self.conn, {
+        self.driver.process_query.assert_called_with({
             'type': Driver.QUERY_READ,
             'filter': ast
         })
 
     def test_update_elements(self):
-        self.driver._process_query = MagicMock(return_value=3)
+        self.driver.process_query = MagicMock(return_value=3)
         filter_ast = [
             {
                 'name': 'filter',
@@ -179,14 +165,14 @@ class DriverTest(UTCase):
         result = self.driver.update_elements(filter_ast, update_ast)
 
         self.assertEqual(result, 3)
-        self.driver._process_query.assert_called_with(self.conn, {
+        self.driver.process_query.assert_called_with({
             'type': Driver.QUERY_UPDATE,
             'filter': filter_ast,
             'update': update_ast
         })
 
     def test_remove_elements(self):
-        self.driver._process_query = MagicMock(return_value=3)
+        self.driver.process_query = MagicMock(return_value=3)
         ast = [
             {
                 'name': 'filter',
@@ -210,7 +196,7 @@ class DriverTest(UTCase):
         result = self.driver.remove_elements(ast)
 
         self.assertEqual(result, 3)
-        self.driver._process_query.assert_called_with(self.conn, {
+        self.driver.process_query.assert_called_with({
             'type': Driver.QUERY_DELETE,
             'filter': ast
         })
