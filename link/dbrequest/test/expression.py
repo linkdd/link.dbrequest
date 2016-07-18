@@ -26,20 +26,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '+'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_add',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 + E('propname')
@@ -47,20 +46,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '+'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_add',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_sub(self):
@@ -69,20 +67,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '-'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_sub',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 - E('propname')
@@ -90,20 +87,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '-'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_sub',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_mul(self):
@@ -112,20 +108,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '*'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_mul',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 * E('propname')
@@ -133,20 +128,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '*'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_mul',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_div(self):
@@ -155,20 +149,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '/'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_div',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 / E('propname')
@@ -176,20 +169,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '/'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_div',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_pow(self):
@@ -198,20 +190,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '**'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_pow',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 ** E('propname')
@@ -219,20 +210,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '**'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_pow',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_lshift(self):
@@ -241,20 +231,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '<<'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_lshift',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 << E('propname')
@@ -262,20 +251,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '<<'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_lshift',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_rshift(self):
@@ -284,20 +272,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '>>'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_rshift',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 >> E('propname')
@@ -305,20 +292,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '>>'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_rshift',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_and(self):
@@ -327,20 +313,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '&'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_and',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 & E('propname')
@@ -348,20 +333,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '&'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_and',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_or(self):
@@ -370,20 +354,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '|'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_or',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 | E('propname')
@@ -391,20 +374,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '|'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_or',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_xor(self):
@@ -413,20 +395,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                },
-                {
-                    'name': 'op',
-                    'val': '^'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'op_xor',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
         e = 5 ^ E('propname')
@@ -434,20 +415,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'val',
-                    'val': 5
-                },
-                {
-                    'name': 'op',
-                    'val': '^'
-                },
-                {
-                    'name': 'ref',
-                    'val': 'propname'
-                }
-            ]
+            {
+                'name': 'op_xor',
+                'val': [
+                    {
+                        'name': 'val',
+                        'val': 5
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    }
+                ]
+            }
         )
 
     def test_expr_func(self):
@@ -457,30 +437,26 @@ class ExpressionTest(UTCase):
         self.assertEqual(
             ast,
             {
-                'name': 'func',
-                'val': {
-                    'func': 'funcname',
-                    'args': [
-                        {
-                            'name': 'ref',
-                            'val': 'propname'
-                        },
-                        [
+                'name': 'func_funcname',
+                'val': [
+                    {
+                        'name': 'ref',
+                        'val': 'propname'
+                    },
+                    {
+                        'name': 'op_mul',
+                        'val': [
                             {
                                 'name': 'ref',
                                 'val': 'propname'
-                            },
-                            {
-                                'name': 'op',
-                                'val': '*'
                             },
                             {
                                 'name': 'val',
                                 'val': 5
                             }
                         ]
-                    ]
-                }
+                    }
+                ]
             }
         )
 
@@ -490,20 +466,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'prop1'
-                },
-                {
-                    'name': 'cond',
-                    'val': '=='
-                },
-                {
-                    'name': 'ref',
-                    'val': 'prop2'
-                }
-            ]
+            {
+                'name': 'cond_eq',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'prop1'
+                    },
+                    {
+                        'name': 'ref',
+                        'val': 'prop2'
+                    }
+                ]
+            }
         )
 
         c = C('prop1') == (E('prop2') + E('prop3'))
@@ -511,30 +486,28 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'prop1'
-                },
-                {
-                    'name': 'cond',
-                    'val': '=='
-                },
-                [
+            {
+                'name': 'cond_eq',
+                'val': [
                     {
-                        'name': 'ref',
-                        'val': 'prop2'
+                        'name': 'prop',
+                        'val': 'prop1'
                     },
                     {
-                        'name': 'op',
-                        'val': '+'
-                    },
-                    {
-                        'name': 'ref',
-                        'val': 'prop3'
+                        'name': 'op_add',
+                        'val': [
+                            {
+                                'name': 'ref',
+                                'val': 'prop2'
+                            },
+                            {
+                                'name': 'ref',
+                                'val': 'prop3'
+                            }
+                        ]
                     }
                 ]
-            ]
+            }
         )
 
     def test_complex_expr(self):
@@ -543,40 +516,37 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                [
+            {
+                'name': 'op_add',
+                'val': [
                     {
-                        'name': 'ref',
-                        'val': 'foo'
+                        'name': 'op_add',
+                        'val': [
+                            {
+                                'name': 'ref',
+                                'val': 'foo'
+                            },
+                            {
+                                'name': 'ref',
+                                'val': 'bar'
+                            }
+                        ]
                     },
                     {
-                        'name': 'op',
-                        'val': '+'
-                    },
-                    {
-                        'name': 'ref',
-                        'val': 'bar'
-                    }
-                ],
-                {
-                    'name': 'op',
-                    'val': '+'
-                },
-                [
-                    {
-                        'name': 'ref',
-                        'val': 'baz'
-                    },
-                    {
-                        'name': 'op',
-                        'val': '+'
-                    },
-                    {
-                        'name': 'ref',
-                        'val': 'biz'
+                        'name': 'op_add',
+                        'val': [
+                            {
+                                'name': 'ref',
+                                'val': 'baz'
+                            },
+                            {
+                                'name': 'ref',
+                                'val': 'biz'
+                            }
+                        ]
                     }
                 ]
-            ]
+            }
         )
 
 

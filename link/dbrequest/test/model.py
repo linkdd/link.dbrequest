@@ -5,6 +5,7 @@ from mock import Mock
 from unittest import main
 
 from link.dbrequest.model import Model
+from link.dbrequest.ast import AST
 import json
 
 
@@ -53,77 +54,76 @@ class ModelTest(UTCase):
         c = self.model._get_filter()
         ast = c.get_ast()
 
-        cond1 = [
+        expected_val = [
             {
-                'name': 'prop',
-                'val': 'foo'
+                'name': 'cond_eq',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
             },
             {
-                'name': 'cond',
-                'val': '=='
-            },
-            {
-                'name': 'val',
-                'val': 'bar'
-            }
-        ]
-        operator = {
-            'name': 'join',
-            'val': '&'
-        }
-        cond2 = [
-            {
-                'name': 'prop',
-                'val': 'bar'
-            },
-            {
-                'name': 'cond',
-                'val': '=='
-            },
-            {
-                'name': 'val',
-                'val': 'baz'
+                'name': 'cond_eq',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'bar'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'baz'
+                    }
+                ]
             }
         ]
 
-        self.assertIsInstance(ast, list)
-        self.assertEqual(len(ast), 3)
-        self.assertEqual(ast[1], operator)
-        self.assertIn(cond1, ast)
-        self.assertIn(cond2, ast)
+        self.assertEqual(ast.name, 'join_and')
+        self.assertTrue(
+            ast.val[0] == expected_val[0]
+            or ast.val[0] == expected_val[1]
+        )
+        self.assertTrue(
+            ast.val[1] == expected_val[0]
+            or ast.val[1] == expected_val[1]
+        )
 
     def test_model_get_update(self):
         a = self.model._get_update()
         ast = [_a.get_ast() for _a in a]
 
-        a1 = [
-            {
-                'name': 'prop',
-                'val': 'foo'
-            },
-            {
-                'name': 'assign',
-                'val': {
+        a1 = {
+            'name': 'assign',
+            'val': [
+                {
+                    'name': 'prop',
+                    'val': 'foo'
+                },
+                {
                     'name': 'val',
                     'val': 'bar'
                 }
-            }
-        ]
-        a2 = [
-            {
-                'name': 'prop',
-                'val': 'bar'
-            },
-            {
-                'name': 'assign',
-                'val': {
+            ]
+        }
+        a2 = {
+            'name': 'assign',
+            'val': [
+                {
+                    'name': 'prop',
+                    'val': 'bar'
+                },
+                {
                     'name': 'val',
                     'val': 'baz'
                 }
-            }
-        ]
+            ]
+        }
 
-        self.assertIsInstance(ast, list)
         self.assertEqual(len(ast), 2)
         self.assertIn(a1, ast)
         self.assertIn(a2, ast)
@@ -136,32 +136,32 @@ class ModelTest(UTCase):
                 'bar': 'baz'
             })
         }
-        a1 = [
-            {
-                'name': 'prop',
-                'val': 'foo'
-            },
-            {
-                'name': 'assign',
-                'val': {
+        a1 = {
+            'name': 'assign',
+            'val': [
+                {
+                    'name': 'prop',
+                    'val': 'foo'
+                },
+                {
                     'name': 'val',
                     'val': 'bar'
                 }
-            }
-        ]
-        a2 = [
-            {
-                'name': 'prop',
-                'val': 'bar'
-            },
-            {
-                'name': 'assign',
-                'val': {
+            ]
+        }
+        a2 = {
+            'name': 'assign',
+            'val': [
+                {
+                    'name': 'prop',
+                    'val': 'bar'
+                },
+                {
                     'name': 'val',
                     'val': 'baz'
                 }
-            }
-        ]
+            ]
+        }
 
         self.driver.configure_mock(**attrs)
 
@@ -181,36 +181,33 @@ class ModelTest(UTCase):
             'remove_elements.return_value': None
         }
         self.driver.configure_mock(**attrs)
-        cond1 = [
+
+        expected_val = [
             {
-                'name': 'prop',
-                'val': 'foo'
+                'name': 'cond_eq',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
             },
             {
-                'name': 'cond',
-                'val': '=='
-            },
-            {
-                'name': 'val',
-                'val': 'bar'
-            }
-        ]
-        operator = {
-            'name': 'join',
-            'val': '&'
-        }
-        cond2 = [
-            {
-                'name': 'prop',
-                'val': 'bar'
-            },
-            {
-                'name': 'cond',
-                'val': '=='
-            },
-            {
-                'name': 'val',
-                'val': 'baz'
+                'name': 'cond_eq',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'bar'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'baz'
+                    }
+                ]
             }
         ]
 
@@ -221,13 +218,19 @@ class ModelTest(UTCase):
         self.assertEqual(len(args), 1)
         self.assertIsInstance(args[0], list)
         self.assertEqual(len(args[0]), 1)
-        self.assertIsInstance(args[0][0], dict)
-        self.assertTrue(args[0][0]['name'], 'filter')
-        self.assertIsInstance(args[0][0]['val'], list)
-        self.assertEqual(len(args[0][0]['val']), 3)
-        self.assertEqual(args[0][0]['val'][1], operator)
-        self.assertIn(cond1, args[0][0]['val'])
-        self.assertIn(cond2, args[0][0]['val'])
+        self.assertIsInstance(args[0][0], AST)
+        self.assertTrue(args[0][0].name, 'filter')
+        self.assertIsInstance(args[0][0].val, AST)
+        self.assertEqual(args[0][0].val.name, 'join_and')
+
+        self.assertTrue(
+            args[0][0].val.val[0] == expected_val[0]
+            or args[0][0].val.val[0] == expected_val[1]
+        )
+        self.assertTrue(
+            args[0][0].val.val[1] == expected_val[0]
+            or args[0][0].val.val[1] == expected_val[1]
+        )
 
 
 if __name__ == '__main__':

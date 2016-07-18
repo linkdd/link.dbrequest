@@ -14,19 +14,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'assign',
-                    'val': {
+            {
+                'name': 'assign',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
                         'name': 'val',
                         'val': 'bar'
                     }
-                }
-            ]
+                ]
+            }
         )
 
     def test_assign_expr(self):
@@ -35,19 +35,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'assign',
-                    'val': {
+            {
+                'name': 'assign',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
                         'name': 'ref',
                         'val': 'bar'
                     }
-                }
-            ]
+                ]
+            }
         )
 
     def test_unassign(self):
@@ -56,16 +56,19 @@ class ExpressionTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'assign',
-                    'val': None
-                }
-            ]
+            {
+                'name': 'assign',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'val',
+                        'val': None
+                    }
+                ]
+            }
         )
 
 

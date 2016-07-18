@@ -105,9 +105,9 @@ class QueryManager(Middleware):
         :raises ASTError: if the AST semantics are not valid
         """
 
-        if isinstance(ast, dict):
-            if ast['name'] not in ['get', 'create']:
-                raise ASTSingleStatementError(ast['name'])
+        if isinstance(ast, AST):
+            if ast.name not in ['get', 'create']:
+                raise ASTSingleStatementError(ast.name)
 
         elif isinstance(ast, list):
             statements = [
@@ -126,11 +126,11 @@ class QueryManager(Middleware):
             for i in range(l):
                 node = ast[i]
 
-                if node['name'] in last_statements and (i + 1) != l:
-                    raise ASTLastStatementError(node['name'], i)
+                if node.name in last_statements and (i + 1) != l:
+                    raise ASTLastStatementError(node.name, i)
 
-                elif node['name'] not in statements:
-                    raise ASTInvalidStatementError(node['name'])
+                elif node.name not in statements:
+                    raise ASTInvalidStatementError(node.name)
 
         else:
             raise ASTInvalidFormatError()
@@ -147,10 +147,10 @@ class QueryManager(Middleware):
 
         self.validate_ast(ast)
 
-        if isinstance(ast, dict):
-            if ast['name'] == 'get':
+        if isinstance(ast, AST):
+            if ast.name == 'get':
                 elements = self.get_child_middleware().find_elements(
-                    ast['val']
+                    ast.val
                 )
 
                 if len(elements) == 0:
@@ -159,28 +159,28 @@ class QueryManager(Middleware):
                 else:
                     return elements[0]
 
-            elif ast['name'] == 'create':
-                return self.get_child_middleware().put_element(ast['val'])
+            elif ast.name == 'create':
+                return self.get_child_middleware().put_element(ast.val)
 
         elif len(ast) == 0:
             return self.get_child_middleware().find_elements(ast)
 
-        elif ast[-1]['name'] == 'update':
+        elif ast[-1].name == 'update':
             return self.get_child_middleware().update_elements(
                 ast[:-1],
-                ast[-1]['val']
+                ast[-1].val
             )
 
-        elif ast[-1]['name'] == 'delete':
+        elif ast[-1].name == 'delete':
             return self.get_child_middleware().remove_elements(ast[:-1])
 
-        elif ast[-1]['name'] == 'count':
+        elif ast[-1].name == 'count':
             return self.get_child_middleware().count_elements(ast[:-1])
 
         else:
             result = self.get_child_middleware().find_elements(ast)
 
-            if ast[-1]['name'] == 'get':
+            if ast[-1].name == 'get':
                 if len(result) == 0:
                     result = None
 
@@ -406,12 +406,16 @@ class Query(object):
         """
 
         c = self._copy()
-        c.ast.append(AST('group', {
-            'key': key,
-            'expressions': [
-                expression.get_ast()
-                for expression in expressions
-            ]
-        }))
+        c.ast.append(
+            AST(
+                'group',
+                [
+                    AST('prop', key)
+                ] + [
+                    expression.get_ast()
+                    for expression in expressions
+                ]
+            )
+        )
 
         return self.manager.execute(c.ast)

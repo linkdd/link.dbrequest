@@ -30,10 +30,10 @@ class A(Node):
         self.value = val
 
     def get_ast(self):
-        return [
-            AST('prop', self.name),
-            AST(
-                'assign',
-                self.value.get_ast() if self.value is not None else self.value
-            )
-        ]
+        return AST(
+            'assign',
+            [
+                AST('prop', self.name),
+                self.value.get_ast() if self.value else AST('val', None)
+            ]
+        )

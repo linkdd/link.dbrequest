@@ -12,14 +12,14 @@ class Comparable(object):
     Check if property exists by default.
     """
 
-    EXISTS = '?'
-    LT = '<'
-    LTE = '<='
-    EQ = '=='
-    NE = '!='
-    GTE = '>='
-    GT = '>'
-    LIKE = '~='
+    EXISTS = 'exists'
+    LT = 'lt'
+    LTE = 'lte'
+    EQ = 'eq'
+    NE = 'ne'
+    GTE = 'gte'
+    GT = 'gt'
+    LIKE = 'like'
 
     def __init__(self, *args, **kwargs):
         super(Comparable, self).__init__(*args, **kwargs)
@@ -156,9 +156,9 @@ class CombinableCondition(object):
     Combine conditions with boolean operators.
     """
 
-    AND = '&'
-    OR = '|'
-    XOR = '^'
+    AND = 'and'
+    OR = 'or'
+    XOR = 'xor'
 
     def _combine(self, operator, value, _reversed):
         """
@@ -233,11 +233,13 @@ class CombinedCondition(Node, CombinableCondition):
         self.inverted = inverted
 
     def get_ast(self):
-        ast = [
-            self.left.get_ast(),
-            AST('join', self.name),
-            self.right.get_ast()
-        ]
+        ast = AST(
+            'join_{0}'.format(self.name),
+            [
+                self.left.get_ast(),
+                self.right.get_ast()
+            ]
+        )
 
         if self.inverted:
             return AST('not', ast)
@@ -264,8 +266,10 @@ class C(Node, Comparable, CombinableCondition):
     """
 
     def get_ast(self):
-        return [
-            AST('prop', self.name),
-            AST('cond', self.operator),
-            self.value.get_ast()
-        ]
+        return AST(
+            'cond_{0}'.format(self.operator),
+            [
+                AST('prop', self.name),
+                self.value.get_ast()
+            ]
+        )

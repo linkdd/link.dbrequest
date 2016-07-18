@@ -13,20 +13,19 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'prop'
-                },
-                {
-                    'name': 'cond',
-                    'val': '?'
-                },
-                {
-                    'name': 'val',
-                    'val': True
-                }
-            ]
+            {
+                'name': 'cond_exists',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'prop'
+                    },
+                    {
+                        'name': 'val',
+                        'val': True
+                    }
+                ]
+            }
         )
 
     def test_property_doesnt_exists(self):
@@ -35,20 +34,19 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'prop'
-                },
-                {
-                    'name': 'cond',
-                    'val': '?'
-                },
-                {
-                    'name': 'val',
-                    'val': False
-                }
-            ]
+            {
+                'name': 'cond_exists',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'prop'
+                    },
+                    {
+                        'name': 'val',
+                        'val': False
+                    }
+                ]
+            }
         )
 
     def test_property_less_than(self):
@@ -57,20 +55,19 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'i'
-                },
-                {
-                    'name': 'cond',
-                    'val': '<'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'cond_lt',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'i'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
     def test_property_less_than_or_equal(self):
@@ -79,20 +76,19 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'i'
-                },
-                {
-                    'name': 'cond',
-                    'val': '<='
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'cond_lte',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'i'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
     def test_property_equal(self):
@@ -101,20 +97,19 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'cond',
-                    'val': '=='
-                },
-                {
-                    'name': 'val',
-                    'val': 'bar'
-                }
-            ]
+            {
+                'name': 'cond_eq',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
+            }
         )
 
     def test_property_greater_than_or_equal(self):
@@ -123,20 +118,19 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'i'
-                },
-                {
-                    'name': 'cond',
-                    'val': '>='
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'cond_gte',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'i'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
     def test_property_greater_than(self):
@@ -145,20 +139,19 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'i'
-                },
-                {
-                    'name': 'cond',
-                    'val': '>'
-                },
-                {
-                    'name': 'val',
-                    'val': 5
-                }
-            ]
+            {
+                'name': 'cond_gt',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'i'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 5
+                    }
+                ]
+            }
         )
 
     def test_property_like(self):
@@ -167,20 +160,19 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'cond',
-                    'val': '~='
-                },
-                {
-                    'name': 'val',
-                    'val': r'bar.*'
-                }
-            ]
+            {
+                'name': 'cond_like',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'val',
+                        'val': r'bar.*'
+                    }
+                ]
+            }
         )
 
     def test_property_and(self):
@@ -189,40 +181,37 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                [
+            {
+                'name': 'join_and',
+                'val': [
                     {
-                        'name': 'prop',
-                        'val': 'foo'
+                        'name': 'cond_eq',
+                        'val': [
+                            {
+                                'name': 'prop',
+                                'val': 'foo'
+                            },
+                            {
+                                'name': 'val',
+                                'val': 'bar'
+                            }
+                        ]
                     },
                     {
-                        'name': 'cond',
-                        'val': '=='
-                    },
-                    {
-                        'name': 'val',
-                        'val': 'bar'
-                    }
-                ],
-                {
-                    'name': 'join',
-                    'val': '&'
-                },
-                [
-                    {
-                        'name': 'prop',
-                        'val': 'bar'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '>'
-                    },
-                    {
-                        'name': 'val',
-                        'val': 5
+                        'name': 'cond_gt',
+                        'val': [
+                            {
+                                'name': 'prop',
+                                'val': 'bar'
+                            },
+                            {
+                                'name': 'val',
+                                'val': 5
+                            }
+                        ]
                     }
                 ]
-            ]
+            }
         )
 
     def test_property_or(self):
@@ -231,40 +220,37 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                [
+            {
+                'name': 'join_or',
+                'val': [
                     {
-                        'name': 'prop',
-                        'val': 'foo'
+                        'name': 'cond_eq',
+                        'val': [
+                            {
+                                'name': 'prop',
+                                'val': 'foo'
+                            },
+                            {
+                                'name': 'val',
+                                'val': 'bar'
+                            }
+                        ]
                     },
                     {
-                        'name': 'cond',
-                        'val': '=='
-                    },
-                    {
-                        'name': 'val',
-                        'val': 'bar'
-                    }
-                ],
-                {
-                    'name': 'join',
-                    'val': '|'
-                },
-                [
-                    {
-                        'name': 'prop',
-                        'val': 'bar'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '>'
-                    },
-                    {
-                        'name': 'val',
-                        'val': 5
+                        'name': 'cond_gt',
+                        'val': [
+                            {
+                                'name': 'prop',
+                                'val': 'bar'
+                            },
+                            {
+                                'name': 'val',
+                                'val': 5
+                            }
+                        ]
                     }
                 ]
-            ]
+            }
         )
 
     def test_property_xor(self):
@@ -273,40 +259,37 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                [
+            {
+                'name': 'join_xor',
+                'val': [
                     {
-                        'name': 'prop',
-                        'val': 'foo'
+                        'name': 'cond_eq',
+                        'val': [
+                            {
+                                'name': 'prop',
+                                'val': 'foo'
+                            },
+                            {
+                                'name': 'val',
+                                'val': 'bar'
+                            }
+                        ]
                     },
                     {
-                        'name': 'cond',
-                        'val': '=='
-                    },
-                    {
-                        'name': 'val',
-                        'val': 'bar'
-                    }
-                ],
-                {
-                    'name': 'join',
-                    'val': '^'
-                },
-                [
-                    {
-                        'name': 'prop',
-                        'val': 'bar'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '>'
-                    },
-                    {
-                        'name': 'val',
-                        'val': 5
+                        'name': 'cond_gt',
+                        'val': [
+                            {
+                                'name': 'prop',
+                                'val': 'bar'
+                            },
+                            {
+                                'name': 'val',
+                                'val': 5
+                            }
+                        ]
                     }
                 ]
-            ]
+            }
         )
 
     def test_property_andor(self):
@@ -315,60 +298,55 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                [
-                    [
-                        {
-                            'name': 'prop',
-                            'val': 'foo'
-                        },
-                        {
-                            'name': 'cond',
-                            'val': '=='
-                        },
-                        {
-                            'name': 'val',
-                            'val': 'bar'
-                        }
-                    ],
+            {
+                'name': 'join_or',
+                'val': [
                     {
-                        'name': 'join',
-                        'val': '&'
-                    },
-                    [
-                        {
-                            'name': 'prop',
-                            'val': 'bar'
-                        },
-                        {
-                            'name': 'cond',
-                            'val': '>'
-                        },
-                        {
-                            'name': 'val',
-                            'val': 5
-                        }
-                    ]
-                ],
-                {
-                    'name': 'join',
-                    'val': '|'
-                },
-                [
-                    {
-                        'name': 'prop',
-                        'val': 'baz'
+                        'name': 'join_and',
+                        'val': [
+                            {
+                                'name': 'cond_eq',
+                                'val': [
+                                    {
+                                        'name': 'prop',
+                                        'val': 'foo'
+                                    },
+                                    {
+                                        'name': 'val',
+                                        'val': 'bar'
+                                    }
+                                ]
+                            },
+                            {
+                                'name': 'cond_gt',
+                                'val': [
+                                    {
+                                        'name': 'prop',
+                                        'val': 'bar'
+                                    },
+                                    {
+                                        'name': 'val',
+                                        'val': 5
+                                    }
+                                ]
+                            }
+                        ]
                     },
                     {
-                        'name': 'cond',
-                        'val': '?'
-                    },
-                    {
-                        'name': 'val',
-                        'val': False
+                        'name': 'cond_exists',
+                        'val': [
+                            {
+                                'name': 'prop',
+                                'val': 'baz'
+                            },
+                            {
+                                'name': 'val',
+                                'val': False
+                            }
+                        ]
                     }
                 ]
-            ]
+            }
         )
 
     def test_wrong_combination(self):
@@ -383,40 +361,37 @@ class ComparisonTest(UTCase):
             ast,
             {
                 'name': 'not',
-                'val': [
-                    [
+                'val': {
+                    'name': 'join_and',
+                    'val': [
                         {
-                            'name': 'prop',
-                            'val': 'foo'
+                            'name': 'cond_eq',
+                            'val': [
+                                {
+                                    'name': 'prop',
+                                    'val': 'foo'
+                                },
+                                {
+                                    'name': 'val',
+                                    'val': 'bar'
+                                }
+                            ]
                         },
                         {
-                            'name': 'cond',
-                            'val': '=='
-                        },
-                        {
-                            'name': 'val',
-                            'val': 'bar'
-                        }
-                    ],
-                    {
-                        'name': 'join',
-                        'val': '&'
-                    },
-                    [
-                        {
-                            'name': 'prop',
-                            'val': 'bar'
-                        },
-                        {
-                            'name': 'cond',
-                            'val': '>'
-                        },
-                        {
-                            'name': 'val',
-                            'val': 5
+                            'name': 'cond_gt',
+                            'val': [
+                                {
+                                    'name': 'prop',
+                                    'val': 'bar'
+                                },
+                                {
+                                    'name': 'val',
+                                    'val': 5
+                                }
+                            ]
                         }
                     ]
-                ]
+                }
             }
         )
 
@@ -428,80 +403,73 @@ class ComparisonTest(UTCase):
 
         self.assertEqual(
             ast,
-            [
-                [
-                    [
-                        {
-                            'name': 'prop',
-                            'val': 'foo'
-                        },
-                        {
-                            'name': 'cond',
-                            'val': '=='
-                        },
-                        {
-                            'name': 'val',
-                            'val': 'bar'
-                        }
-                    ],
+            {
+                'name': 'join_and',
+                'val': [
                     {
-                        'name': 'join',
-                        'val': '&'
+                        'name': 'join_and',
+                        'val': [
+                            {
+                                'name': 'cond_eq',
+                                'val': [
+                                    {
+                                        'name': 'prop',
+                                        'val': 'foo'
+                                    },
+                                    {
+                                        'name': 'val',
+                                        'val': 'bar'
+                                    }
+                                ]
+                            },
+                            {
+                                'name': 'cond_gt',
+                                'val': [
+                                    {
+                                        'name': 'prop',
+                                        'val': 'bar'
+                                    },
+                                    {
+                                        'name': 'val',
+                                        'val': 5
+                                    }
+                                ]
+                            }
+                        ]
                     },
-                    [
-                        {
-                            'name': 'prop',
-                            'val': 'bar'
-                        },
-                        {
-                            'name': 'cond',
-                            'val': '>'
-                        },
-                        {
-                            'name': 'val',
-                            'val': 5
-                        }
-                    ]
-                ],
-                {
-                    'name': 'join',
-                    'val': '&'
-                },
-                [
-                    [
-                        {
-                            'name': 'prop',
-                            'val': 'foo'
-                        },
-                        {
-                            'name': 'cond',
-                            'val': '=='
-                        },
-                        {
-                            'name': 'val',
-                            'val': 'bar'
-                        }
-                    ],
                     {
-                        'name': 'join',
-                        'val': '&'
-                    },
-                    [
-                        {
-                            'name': 'prop',
-                            'val': 'bar'
-                        },
-                        {
-                            'name': 'cond',
-                            'val': '>'
-                        },
-                        {
-                            'name': 'val',
-                            'val': 5
-                        }
-                    ]
+                        'name': 'join_and',
+                        'val': [
+                            {
+                                'name': 'cond_eq',
+                                'val': [
+                                    {
+                                        'name': 'prop',
+                                        'val': 'foo'
+                                    },
+                                    {
+                                        'name': 'val',
+                                        'val': 'bar'
+                                    }
+                                ]
+                            },
+                            {
+                                'name': 'cond_gt',
+                                'val': [
+                                    {
+                                        'name': 'prop',
+                                        'val': 'bar'
+                                    },
+                                    {
+                                        'name': 'val',
+                                        'val': 5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
                 ]
-            ]
+            }
         )
 
 

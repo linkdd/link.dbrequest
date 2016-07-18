@@ -9,18 +9,18 @@ class CombinableExpression(object):
     Base class for expressions, overriding mathematical expressions.
     """
 
-    ADD = '+'
-    SUB = '-'
-    MUL = '*'
-    DIV = '/'
-    MOD = '%'
-    POW = '**'
+    ADD = 'add'
+    SUB = 'sub'
+    MUL = 'mul'
+    DIV = 'div'
+    MOD = 'mod'
+    POW = 'pow'
 
-    BITLSHIFT = '<<'
-    BITRSHIFT = '>>'
-    BITAND = '&'
-    BITOR = '|'
-    BITXOR = '^'
+    BITLSHIFT = 'lshift'
+    BITRSHIFT = 'rshift'
+    BITAND = 'and'
+    BITOR = 'or'
+    BITXOR = 'xor'
 
     def _combine(self, operator, value, _reversed):
         """
@@ -386,11 +386,13 @@ class CombinedExpression(Node, CombinableExpression):
         self.right = right
 
     def get_ast(self):
-        return [
-            self.left.get_ast(),
-            AST('op', self.name),
-            self.right.get_ast()
-        ]
+        return AST(
+            'op_{0}'.format(self.name),
+            [
+                self.left.get_ast(),
+                self.right.get_ast()
+            ]
+        )
 
 
 class E(Node, CombinableExpression):
@@ -423,10 +425,10 @@ class F(E):
         ]
 
     def get_ast(self):
-        return AST('func', {
-            'func': self.name,
-            'args': [
+        return AST(
+            'func_{0}'.format(self.name),
+            [
                 arg.get_ast()
                 for arg in self.arguments
             ]
-        })
+        )

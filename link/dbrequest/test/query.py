@@ -13,6 +13,7 @@ from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
 from link.dbrequest.expression import E, F
 
+from link.dbrequest.ast import AST
 from link.dbrequest.ast import ASTSingleStatementError
 from link.dbrequest.ast import ASTLastStatementError
 from link.dbrequest.ast import ASTInvalidStatementError
@@ -46,23 +47,15 @@ class QueryManagerTest(UTCase):
 
     def test_from_ast(self):
         expected = [
-            {
-                'name': 'filter',
-                'val': [
-                    {
-                        'name': 'prop',
-                        'val': 'foo'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '=='
-                    },
-                    {
-                        'name': 'val',
-                        'val': 'bar'
-                    }
-                ]
-            }
+            AST(
+                'filter',
+                AST(
+                    'cond_eq', [
+                        AST('prop', 'foo'),
+                        AST('val', 'bar')
+                    ]
+                )
+            )
         ]
 
         attrs = {
@@ -83,20 +76,19 @@ class QueryManagerTest(UTCase):
         expected = [
             {
                 'name': 'filter',
-                'val': [
-                    {
-                        'name': 'prop',
-                        'val': 'foo'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '=='
-                    },
-                    {
-                        'name': 'val',
-                        'val': 'bar'
-                    }
-                ]
+                'val': {
+                    'name': 'cond_eq',
+                    'val': [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'val',
+                            'val': 'bar'
+                        }
+                    ]
+                }
             }
         ]
 
@@ -106,43 +98,26 @@ class QueryManagerTest(UTCase):
 
     def test_validate_ast(self):
         with self.assertRaises(ASTSingleStatementError):
-            self.query.validate_ast({
-                'name': 'not_get_or_create'
-            })
+            self.query.validate_ast(AST('not_get_or_create', 'unused'))
 
         for stmt in ['update', 'delete', 'get', 'count', 'group']:
             with self.assertRaises(ASTLastStatementError):
                 self.query.validate_ast([
-                    {
-                        'name': stmt,
-                        'val': 'unused'
-                    },
-                    {
-                        'name': 'unused',
-                        'val': 'unused'
-                    }
+                    AST(stmt, 'unused'),
+                    AST('unused', 'unused')
                 ])
 
         with self.assertRaises(ASTInvalidStatementError):
             self.query.validate_ast([
-                {
-                    'name': 'unknown',
-                    'val': 'unused'
-                }
+                AST('unknown', 'unused')
             ])
 
         with self.assertRaises(ASTInvalidFormatError):
             self.query.validate_ast('invalid format')
 
         self.query.validate_ast([
-            {
-                'name': 'filter',
-                'val': 'unused'
-            },
-            {
-                'name': 'update',
-                'val': 'unused'
-            }
+            AST('filter', 'unused'),
+            AST('update', 'unused')
         ])
 
     def test_manager_get_none(self):
@@ -155,20 +130,19 @@ class QueryManagerTest(UTCase):
 
         self.assertIsNone(result)
 
-        self.feature.find_elements.assert_called_with([
-            {
-                'name': 'prop',
-                'val': 'foo'
-            },
-            {
-                'name': 'cond',
-                'val': '?'
-            },
-            {
-                'name': 'val',
-                'val': True
-            }
-        ])
+        self.feature.find_elements.assert_called_with({
+            'name': 'cond_exists',
+            'val': [
+                {
+                    'name': 'prop',
+                    'val': 'foo'
+                },
+                {
+                    'name': 'val',
+                    'val': True
+                }
+            ]
+        })
 
     def test_manager_get_one(self):
         expected = {'foo': 'bar'}
@@ -181,20 +155,19 @@ class QueryManagerTest(UTCase):
 
         self.assertEqual(result, expected)
 
-        self.feature.find_elements.assert_called_with([
-            {
-                'name': 'prop',
-                'val': 'foo'
-            },
-            {
-                'name': 'cond',
-                'val': '?'
-            },
-            {
-                'name': 'val',
-                'val': True
-            }
-        ])
+        self.feature.find_elements.assert_called_with({
+            'name': 'cond_exists',
+            'val': [
+                {
+                    'name': 'prop',
+                    'val': 'foo'
+                },
+                {
+                    'name': 'val',
+                    'val': True
+                }
+            ]
+        })
 
     def test_manager_create(self):
         expected = {'_id': 'some id', 'foo': 'bar'}
@@ -207,21 +180,19 @@ class QueryManagerTest(UTCase):
 
         self.assertEqual(result, expected)
 
-        self.feature.put_element.assert_called_with([
-            [
+        self.feature.put_element.assert_called_with([{
+            'name': 'assign',
+            'val': [
                 {
                     'name': 'prop',
                     'val': 'foo'
                 },
                 {
-                    'name': 'assign',
-                    'val': {
-                        'name': 'val',
-                        'val': 'bar'
-                    }
+                    'name': 'val',
+                    'val': 'bar'
                 }
             ]
-        ])
+        }])
 
     def test_query_copy(self):
         q1 = self.query.all()
@@ -247,20 +218,19 @@ class QueryManagerTest(UTCase):
 
         self.feature.count_elements.assert_called_with([{
             'name': 'filter',
-            'val': [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'cond',
-                    'val': '=='
-                },
-                {
-                    'name': 'val',
-                    'val': 'bar'
-                }
-            ]
+            'val': {
+                'name': 'cond_eq',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'val',
+                        'val': 'bar'
+                    }
+                ]
+            }
         }])
 
     def test_query_get_none(self):
@@ -276,20 +246,19 @@ class QueryManagerTest(UTCase):
         self.feature.find_elements.assert_called_with([
             {
                 'name': 'get',
-                'val': [
-                    {
-                        'name': 'prop',
-                        'val': 'foo'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '?'
-                    },
-                    {
-                        'name': 'val',
-                        'val': True
-                    }
-                ]
+                'val': {
+                    'name': 'cond_exists',
+                    'val': [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'val',
+                            'val': True
+                        }
+                    ]
+                }
             }
         ])
 
@@ -307,20 +276,19 @@ class QueryManagerTest(UTCase):
         self.feature.find_elements.assert_called_with([
             {
                 'name': 'get',
-                'val': [
-                    {
-                        'name': 'prop',
-                        'val': 'foo'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '?'
-                    },
-                    {
-                        'name': 'val',
-                        'val': True
-                    }
-                ]
+                'val': {
+                    'name': 'cond_exists',
+                    'val': [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'val',
+                            'val': True
+                        }
+                    ]
+                }
             }
         ])
 
@@ -345,20 +313,19 @@ class QueryManagerTest(UTCase):
         self.feature.find_elements.assert_called_with([
             {
                 'name': 'filter',
-                'val': [
-                    {
-                        'name': 'prop',
-                        'val': 'foo'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '=='
-                    },
-                    {
-                        'name': 'val',
-                        'val': 'bar'
-                    }
-                ]
+                'val': {
+                    'name': 'cond_eq',
+                    'val': [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'val',
+                            'val': 'bar'
+                        }
+                    ]
+                }
             }
         ])
 
@@ -383,20 +350,19 @@ class QueryManagerTest(UTCase):
         self.feature.find_elements.assert_called_with([
             {
                 'name': 'exclude',
-                'val': [
-                    {
-                        'name': 'prop',
-                        'val': 'foo'
-                    },
-                    {
-                        'name': 'cond',
-                        'val': '=='
-                    },
-                    {
-                        'name': 'val',
-                        'val': 'bar'
-                    }
-                ]
+                'val': {
+                    'name': 'cond_eq',
+                    'val': [
+                        {
+                            'name': 'prop',
+                            'val': 'foo'
+                        },
+                        {
+                            'name': 'val',
+                            'val': 'bar'
+                        }
+                    ]
+                }
             }
         ])
 
@@ -457,19 +423,19 @@ class QueryManagerTest(UTCase):
 
         self.assertEqual(result, 3)
         self.feature.update_elements.assert_called_with([], [
-            [
-                {
-                    'name': 'prop',
-                    'val': 'foo'
-                },
-                {
-                    'name': 'assign',
-                    'val': {
+            {
+                'name': 'assign',
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
                         'name': 'val',
                         'val': 'bar'
                     }
-                }
-            ]
+                ]
+            }
         ])
 
     def test_query_delete(self):
@@ -497,23 +463,21 @@ class QueryManagerTest(UTCase):
         self.feature.find_elements.assert_called_with([
             {
                 'name': 'group',
-                'val': {
-                    'key': 'foo',
-                    'expressions': [
-                        {
-                            'name': 'func',
-                            'val': {
-                                'func': 'sum',
-                                'args': [
-                                    {
-                                        'name': 'ref',
-                                        'val': 'bar'
-                                    }
-                                ]
+                'val': [
+                    {
+                        'name': 'prop',
+                        'val': 'foo'
+                    },
+                    {
+                        'name': 'func_sum',
+                        'val': [
+                            {
+                                'name': 'ref',
+                                'val': 'bar'
                             }
-                        }
-                    ]
-                }
+                        ]
+                    }
+                ]
             }
         ])
 
