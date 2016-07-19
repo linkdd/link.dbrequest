@@ -146,10 +146,11 @@ class QueryManager(Middleware):
         """
 
         self.validate_ast(ast)
+        feature = getfeature(self.get_child_middleware(), Driver.name)
 
         if isinstance(ast, AST):
             if ast.name == 'get':
-                elements = self.get_child_middleware().find_elements(
+                elements = feature.find_elements(
                     ast.val
                 )
 
@@ -160,25 +161,25 @@ class QueryManager(Middleware):
                     return elements[0]
 
             elif ast.name == 'create':
-                return self.get_child_middleware().put_element(ast.val)
+                return feature.put_element(ast.val)
 
         elif len(ast) == 0:
-            return self.get_child_middleware().find_elements(ast)
+            return feature.find_elements(ast)
 
         elif ast[-1].name == 'update':
-            return self.get_child_middleware().update_elements(
+            return feature.update_elements(
                 ast[:-1],
                 ast[-1].val
             )
 
         elif ast[-1].name == 'delete':
-            return self.get_child_middleware().remove_elements(ast[:-1])
+            return feature.remove_elements(ast[:-1])
 
         elif ast[-1].name == 'count':
-            return self.get_child_middleware().count_elements(ast[:-1])
+            return feature.count_elements(ast[:-1])
 
         else:
-            result = self.get_child_middleware().find_elements(ast)
+            result = feature.find_elements(ast)
 
             if ast[-1].name == 'get':
                 if len(result) == 0:
@@ -188,19 +189,6 @@ class QueryManager(Middleware):
                     result = result[0]
 
             return result
-
-    def set_child_middleware(self, child):
-        super(QueryManager, self).set_child_middleware(child)
-
-        try:
-            feature = getfeature(child, Driver.name)
-
-        except AttributeError:
-            raise Middleware.Error(
-                'Child middleware has no feature "{0}"'.format(Driver.name)
-            )
-
-        self._child = feature
 
 
 class Query(object):
