@@ -28,7 +28,7 @@ See documentation_ for more informations.
    :alt: Supported Python implementations
 
 .. image:: https://img.shields.io/pypi/wheel/link.dbrequest.svg?style=flat-square
-   :target: https://travis-ci.org/linkdd/link.dbrequest
+   :target: https://pypi.python.org/pypi/link.dbrequest
    :alt: Download format
 
 .. image:: https://travis-ci.org/linkdd/link.dbrequest.svg?branch=master&style=flat-square
@@ -126,3 +126,10 @@ Operations on documents:
    # save/delete a single document
    doc.save()
    doc.delete()
+
+Donating
+--------
+
+.. image:: https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.svg
+   :target: https://gratipay.com/~linkdd/
+   :alt: Support via Gratipay
