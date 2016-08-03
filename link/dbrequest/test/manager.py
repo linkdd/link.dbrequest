@@ -7,7 +7,8 @@ from unittest import main
 from link.middleware.core import Middleware
 from link.feature import Feature, addfeatures
 
-from link.dbrequest.query import QueryManager, Query
+from link.dbrequest.lazy import Query, Procedure
+from link.dbrequest.manager import QueryManager
 
 from link.dbrequest.comparison import C
 from link.dbrequest.assignment import A
@@ -42,8 +43,7 @@ class QueryManagerTest(UTCase):
 
         self.assertIsInstance(q, Query)
         self.assertEqual(q.ast, [])
-        self.assertEqual(q.result, None)
-        self.assertTrue(q.manager is self.query)
+        self.assertIs(q.manager, self.query)
 
     def test_from_ast(self):
         expected = [
@@ -98,7 +98,7 @@ class QueryManagerTest(UTCase):
 
     def test_validate_ast(self):
         with self.assertRaises(ASTSingleStatementError):
-            self.query.validate_ast(AST('not_get_or_create', 'unused'))
+            self.query.validate_ast(AST('not_get_or_create_or_run', 'unused'))
 
         for stmt in ['update', 'delete', 'get', 'count', 'group']:
             with self.assertRaises(ASTLastStatementError):
@@ -196,7 +196,7 @@ class QueryManagerTest(UTCase):
 
     def test_query_copy(self):
         q1 = self.query.all()
-        q2 = q1._copy()
+        q2 = q1.copy()
 
         self.assertIsInstance(q1, Query)
         self.assertIsInstance(q2, Query)
@@ -204,7 +204,6 @@ class QueryManagerTest(UTCase):
 
         self.assertIs(q1.manager, q2.manager)
         self.assertEqual(q1.ast, q2.ast)
-        self.assertIsNone(q2.result)
 
     def test_query_count(self):
         attrs = {
@@ -480,6 +479,35 @@ class QueryManagerTest(UTCase):
                 ]
             }
         ])
+
+    def test_scoped_query(self):
+        q1 = self.query.all()
+        self.assertEqual(q1.scope, [])
+
+        q2 = self.query.subset(q1)
+        self.assertEqual(q2.scope, [q1])
+
+    def test_procedure(self):
+        f = F('sum')
+        q = self.query.all()
+        p = self.query.prepare(f, q)
+
+        self.assertIsInstance(p, Procedure)
+        self.assertIs(p.manager, self.query)
+        self.assertIs(p.f, f)
+        self.assertEqual(p.scope, [q])
+
+    def test_run(self):
+        expected = 'result'
+        attrs = {
+            'run_procedure.return_value': expected
+        }
+        self.feature.configure_mock(**attrs)
+
+        q = self.query.all()
+        ret = self.query.run(F('sum'), q)
+
+        self.assertEqual(ret, expected)
 
 
 if __name__ == '__main__':

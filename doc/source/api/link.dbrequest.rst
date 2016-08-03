@@ -4,10 +4,10 @@ link.dbrequest package
 Submodules
 ----------
 
-link.dbrequest.query module
----------------------------
+link.dbrequest.manager module
+-----------------------------
 
-.. automodule:: link.dbrequest.query
+.. automodule:: link.dbrequest.manager
     :members:
     :undoc-members:
     :show-inheritance:
@@ -24,6 +24,14 @@ link.dbrequest.model module
 ---------------------------
 
 .. automodule:: link.dbrequest.model
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+link.dbrequest.lazy module
+--------------------------
+
+.. automodule:: link.dbrequest.lazy
     :members:
     :undoc-members:
     :show-inheritance:

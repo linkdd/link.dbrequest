@@ -16,6 +16,7 @@ class Driver(Feature):
     QUERY_READ = 'find'
     QUERY_UPDATE = 'update'
     QUERY_DELETE = 'delete'
+    QUERY_RUN = 'run'
 
     model_class = Model
     cursor_class = Cursor
@@ -25,7 +26,7 @@ class Driver(Feature):
         This method must be overriden, handles every query made to the storage.
 
         :param query: query to process
-        :type query: dict
+        :type query: AST
 
         :returns: driver's response.
         """
@@ -37,7 +38,7 @@ class Driver(Feature):
         Count number of elements matching the query described by the AST.
 
         :param ast: AST describing the query
-        :type ast: list or dict
+        :type ast: list or AST
 
         :returns: number of elements matching the query
         :rtype: int
@@ -71,7 +72,7 @@ class Driver(Feature):
         Find elements matching the query described by the AST.
 
         :param ast: AST describing the query
-        :type ast: list or dict
+        :type ast: list or AST
 
         :returns: Cursor on matching elements
         :rtype: Cursor
@@ -109,7 +110,7 @@ class Driver(Feature):
         Delete elements matching the query described by the AST.
 
         :param ast: AST describing the query
-        :type ast: list or dict
+        :type ast: list or AST
 
         :returns: Number of elements deleted
         :rtype: int
@@ -118,4 +119,20 @@ class Driver(Feature):
         return self.process_query({
             'type': Driver.QUERY_DELETE,
             'filter': ast
+        })
+
+    def run_procedure(self, ast):
+        """
+        Run procedure on middleware.
+
+        :param ast: AST describing the query
+        :type ast: AST
+
+        :returns: Procedure's result
+        :rtype: any
+        """
+
+        return self.process_query({
+            'type': Driver.QUERY_RUN,
+            'procedure': ast
         })
